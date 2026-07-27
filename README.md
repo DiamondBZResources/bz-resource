@@ -78,3 +78,42 @@ If `VITE_API_BASE_URL` is empty in production, the contact form remains visible 
 - GitHub Pages static hosting cannot run the Express API.
 - Contact form delivery requires a separately hosted backend and a production `VITE_API_BASE_URL`.
 - Do not commit `client/dist` to `main`; the GitHub Actions workflow uploads it as a Pages artifact.
+
+## Applicant and New Hire Forms
+
+The React application now includes internal multi-step English and Spanish routes for the applicant questionnaire and new-hire onboarding packet:
+
+```text
+#/forms/applicant-questionnaire/en
+#/forms/applicant-questionnaire/es
+#/forms/new-hire-application/en
+#/forms/new-hire-application/es
+```
+
+Sensitive identity, tax, medical, and banking information is intentionally excluded from the public browser forms. Those documents must be completed through an approved secure onboarding process.
+
+To enable online questionnaire delivery, configure the separately hosted Express server with `FORM_WEBHOOK_URL`. The server forwards the completed form payload to that secure HTTPS webhook and does not write submissions to the repository or browser storage. An optional `FORM_WEBHOOK_BEARER_TOKEN` can be sent as a bearer token. When no webhook is configured, users can print or save their completed form and receive a clear configuration message rather than a false success state.
+
+## Form Security and Malware Protection
+
+The public forms accept structured JSON only. Multipart form data, binary bodies, file fields, embedded data URLs, and large base64-style blobs are rejected before a submission can reach the delivery webhook. The application does not expose a public file-upload endpoint.
+
+The API also includes:
+
+- strict browser-origin allowlisting through `ALLOWED_ORIGINS`
+- HTTPS enforcement in production
+- security headers and removal of the Express identification header
+- per-IP and per-route submission rate limiting
+- a hidden bot-trap field and minimum form-completion timing check
+- body-size, depth, field-count, array-size, and string-length limits
+- rejection of prototype-pollution keys and executable HTML/script payloads
+- generic error responses with request IDs and no applicant PII in server logs
+- optional HMAC-SHA256 webhook signatures using `FORM_WEBHOOK_SIGNING_SECRET`
+
+The webhook receiver should verify `X-BZ-Timestamp` and `X-BZ-Signature` before processing a form. The signature is computed from:
+
+```text
+HMAC_SHA256(secret, timestamp + "." + rawJsonBody)
+```
+
+No public upload endpoint should be added without server-side MIME detection, extension allowlisting, private object storage, antivirus scanning such as ClamAV or a managed scanning service, randomized storage names, and a quarantine workflow. Client-side extension checks alone are not malware protection.

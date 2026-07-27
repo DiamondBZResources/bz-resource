@@ -13,9 +13,9 @@ function NotFoundPage() {
       <PageHero
         eyebrow="Not Found"
         title="Page Not Found"
-        description="The page you requested does not exist in this rebuild."
+        description="The page you requested may have moved or is no longer available."
       />
-      <section className="section">
+      <section className="section section-soft">
         <Reveal className="section-inner content-panel">
           <p>Use the navigation to continue exploring BZ Resources.</p>
           <Link className="button" to="/">

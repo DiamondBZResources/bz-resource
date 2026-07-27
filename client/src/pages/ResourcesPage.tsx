@@ -1,3 +1,4 @@
+import CallToAction from '../components/CallToAction'
 import PageHero from '../components/PageHero'
 import Reveal from '../components/Reveal'
 import { assetPath } from '../lib/assets'
@@ -34,7 +35,7 @@ function ResourcesPage() {
         description="Public BZ Resources brochure materials, stored locally for reliable access."
       />
 
-      <section className="section">
+      <section className="section section-soft">
         <div className="section-inner resource-grid">
           {brochures.map((brochure, index) => (
             <Reveal
@@ -60,7 +61,12 @@ function ResourcesPage() {
                 <a className="button" download href={brochure.href}>
                   Download PDF
                 </a>
-                <a className="text-link" href={brochure.href} target="_blank">
+                <a
+                  className="text-link"
+                  href={brochure.href}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   Open in browser
                   <span className="sr-only">, opens in a new tab</span>
                 </a>
@@ -69,6 +75,13 @@ function ResourcesPage() {
           ))}
         </div>
       </section>
+
+      <CallToAction
+        title="Have a question about BZ Resources?"
+        text="Reach out for help choosing the right staffing or workforce service for your business."
+        linkLabel="Contact Us"
+        to="/contact"
+      />
     </>
   )
 }

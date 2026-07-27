@@ -1,13 +1,13 @@
 :root {
-  color-scheme: dark;
+  color-scheme: light;
   font-family:
     Arial,
     Helvetica,
     sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  color: #ffffff;
-  background: #353b41;
+  color: #1c2935;
+  background: #ffffff;
 }
 
 html {
@@ -20,7 +20,7 @@ body {
   min-height: 100%;
   margin: 0;
   overflow-x: hidden;
-  background: #353b41;
+  background: #ffffff;
 }
 
 #root {
@@ -57,5 +57,5 @@ a {
 
 ::selection {
   color: #ffffff;
-  background: #6f95ef;
+  background: #6f93e5;
 }

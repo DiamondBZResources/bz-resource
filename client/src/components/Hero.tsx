@@ -1,47 +1,36 @@
-import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
+import { requestProposalUrl } from '../data/navigation'
 import { assetPath } from '../lib/assets'
 
-type HeroStyle = CSSProperties & {
-  '--hero-background': string
-}
-
 function Hero() {
-  const heroStyle: HeroStyle = {
-    '--hero-background': `url("${assetPath('images/largeImageForMain.jpg')}")`,
-  }
-
   return (
-    <section
-      className="hero-section"
-      aria-labelledby="hero-heading"
-      style={heroStyle}
-    >
+    <section className="hero-section" aria-labelledby="hero-heading">
       <div className="hero-content">
         <div className="hero-copy">
-          <img
-            className="hero-logo logo-image"
-            alt=""
-            aria-hidden="true"
-            decoding="async"
-            fetchPriority="high"
-            loading="eager"
-            src={assetPath('images/BZ-Logo.png.webp')}
-          />
+          <p className="eyebrow">Staffing & workforce support</p>
           <h1 id="hero-heading">Satisfying All of Your Staffing Needs</h1>
           <p>
-            BZ Resources connects businesses with qualified candidates while
-            supporting recruitment, payroll, screening, training, tracking, and
-            workforce administration.
+            BZ Resources helps employers build dependable teams and gives job
+            seekers a clearer path to opportunity—with hands-on support from
+            recruitment through workforce administration.
           </p>
           <div className="hero-actions">
             <Link className="button" to="/services">
-              View Our Services
+              Explore Our Services
             </Link>
-            <Link className="button button-outline" to="/contact">
-              Contact Us
-            </Link>
+            <a
+              className="button button-secondary"
+              href={requestProposalUrl}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Request a Proposal
+            </a>
           </div>
+          <Link className="hero-contact-link" to="/contact">
+            Or contact BZ Resources
+            <span aria-hidden="true"> →</span>
+          </Link>
         </div>
 
         <div className="hero-feature">
@@ -58,12 +47,6 @@ function Hero() {
             />
           </div>
         </div>
-      </div>
-
-      <div className="hero-dots" aria-hidden="true">
-        <span className="active" />
-        <span />
-        <span />
       </div>
     </section>
   )

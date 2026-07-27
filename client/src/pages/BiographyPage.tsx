@@ -1,3 +1,4 @@
+import CallToAction from '../components/CallToAction'
 import PageHero from '../components/PageHero'
 import Reveal from '../components/Reveal'
 import { assetPath } from '../lib/assets'
@@ -19,7 +20,7 @@ function BiographyPage() {
         description="Founder and owner of BZ Resources."
       />
 
-      <section className="section">
+      <section className="section section-soft">
         <div className="section-inner two-column owner-layout">
           <Reveal>
             <div className="owner-image-frame">
@@ -34,7 +35,8 @@ function BiographyPage() {
               />
             </div>
           </Reveal>
-          <Reveal className="content-panel" delay={1}>
+          <Reveal className="content-panel editorial-copy" delay={1}>
+            <p className="eyebrow">Leadership grounded in experience</p>
             <p>
               Veronica Lake, our founder and owner, has more than 15 years of
               staffing industry experience. While pursuing her MBA, a Masters in
@@ -56,9 +58,20 @@ function BiographyPage() {
               management systems. By letting BZ Resources handle the staffing
               side of things, companies can focus on what they do best.
             </p>
+            <blockquote className="pull-quote">
+              BZ Resources is built to help companies simplify employee
+              management and stay focused on their core business.
+            </blockquote>
           </Reveal>
         </div>
       </section>
+
+      <CallToAction
+        title="Meet the team behind your staffing support"
+        text="Connect with BZ Resources to discuss your workforce priorities and the services that fit your organization."
+        linkLabel="Contact BZ Resources"
+        to="/contact"
+      />
     </>
   )
 }

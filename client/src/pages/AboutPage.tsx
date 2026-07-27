@@ -1,3 +1,4 @@
+import CallToAction from '../components/CallToAction'
 import PageHero from '../components/PageHero'
 import Reveal from '../components/Reveal'
 import SectionHeading from '../components/SectionHeading'
@@ -20,9 +21,9 @@ function AboutPage() {
         description="BZ Resources aims to improve business performance through staffing and training services across the United States."
       />
 
-      <section className="section">
+      <section className="section section-soft">
         <div className="section-inner two-column">
-          <Reveal className="content-panel">
+          <Reveal className="editorial-copy">
             <SectionHeading title="Business Solutions">
               <p>
                 Running a business is not easy. BZ Resources helps bring
@@ -42,6 +43,10 @@ function AboutPage() {
               practical staffing partner focused on training, compliance, and
               stronger day-to-day performance.
             </p>
+            <blockquote className="pull-quote">
+              The right staffing partner gives business leaders more freedom to
+              focus on performance, productivity, and growth.
+            </blockquote>
           </Reveal>
           <Reveal delay={1}>
             <div className="feature-image-frame">
@@ -58,6 +63,13 @@ function AboutPage() {
           </Reveal>
         </div>
       </section>
+
+      <CallToAction
+        title="Put a practical staffing partner to work"
+        text="Tell BZ Resources where your business needs support, from recruiting and screening to payroll and workforce administration."
+        linkLabel="Contact Us"
+        to="/contact"
+      />
     </>
   )
 }

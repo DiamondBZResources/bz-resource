@@ -77,11 +77,15 @@ export async function postJson<TRequest extends object, TResponse>(
   const response = await fetch(url, {
     body: JSON.stringify(body),
     cache: 'no-store',
+    credentials: 'omit',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
     method: 'POST',
+    redirect: 'error',
+    referrerPolicy: 'strict-origin-when-cross-origin',
+    signal: AbortSignal.timeout(20_000),
   })
 
   return parseJsonResponse<TResponse>(response)

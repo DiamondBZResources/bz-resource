@@ -18,11 +18,12 @@ function Footer() {
         <div className="footer-brand">
           <img
             className="logo-image"
-            src={assetPath('images/BZ-Logo.png.webp')}
+            src={assetPath('images/BZ-Logo-transparent.png')}
             alt="BZ Resources"
             decoding="async"
             loading="lazy"
           />
+          <span aria-hidden="true" className="footer-brand-wordmark">Resources</span>
         </div>
 
         <div className="footer-column">
@@ -33,7 +34,7 @@ function Footer() {
                 {item.label}
               </Link>
             ))}
-            <a href={requestProposalUrl} rel="noreferrer" target="_blank">
+            <a href={requestProposalUrl} rel="noopener noreferrer" target="_blank">
               Request For Proposal
             </a>
           </nav>
@@ -79,10 +80,10 @@ function Footer() {
                   className="social-link"
                   href={item.href}
                   key={item.label}
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   target="_blank"
                 >
-                  {item.label === 'LinkedIn' ? 'in' : item.label.charAt(0)}
+                  {item.label}
                 </a>
               ))}
             </div>

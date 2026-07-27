@@ -1,3 +1,4 @@
+import CallToAction from '../components/CallToAction'
 import PageHero from '../components/PageHero'
 import Reveal from '../components/Reveal'
 import SectionHeading from '../components/SectionHeading'
@@ -39,7 +40,7 @@ function ServicesPage() {
         </Reveal>
       </section>
 
-      <section className="section services-detail-section">
+      <section className="section services-detail-section section-soft">
         <div className="section-inner">
           <SectionHeading title="Full Service Support" />
           <div className="service-detail-list">
@@ -48,6 +49,7 @@ function ServicesPage() {
                 as="article"
                 className="service-detail"
                 delay={(index % 4) as 0 | 1 | 2 | 3}
+                id={service.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}
                 key={service.title}
               >
                 <div className="service-detail-image-frame">
@@ -71,6 +73,13 @@ function ServicesPage() {
           </div>
         </div>
       </section>
+
+      <CallToAction
+        title="Need a workforce solution shaped around your business?"
+        text="Talk with BZ Resources about staffing, recruitment, payroll, screening, training, tracking, or workers compensation support."
+        linkLabel="Start a Conversation"
+        to="/contact"
+      />
     </>
   )
 }

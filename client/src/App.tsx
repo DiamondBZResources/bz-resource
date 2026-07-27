@@ -8,7 +8,9 @@ import AboutPage from './pages/AboutPage'
 import BiographyPage from './pages/BiographyPage'
 import BlogPage from './pages/BlogPage'
 import ContactPage from './pages/ContactPage'
+import ApplicantQuestionnairePage from './pages/ApplicantQuestionnairePage'
 import FormsPage from './pages/FormsPage'
+import NewHireApplicationPage from './pages/NewHireApplicationPage'
 import HomePage from './pages/HomePage'
 import NotFoundPage from './pages/NotFoundPage'
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage'
@@ -40,6 +42,8 @@ function App() {
             <Route element={<BlogPage />} path="/blog" />
             <Route element={<ContactPage />} path="/contact" />
             <Route element={<FormsPage />} path="/forms" />
+            <Route element={<ApplicantQuestionnairePage />} path="/forms/applicant-questionnaire/:language" />
+            <Route element={<NewHireApplicationPage />} path="/forms/new-hire-application/:language" />
             <Route element={<PrivacyPolicyPage />} path="/privacy-policy" />
             <Route element={<NotFoundPage />} path="*" />
           </Routes>

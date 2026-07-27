@@ -5,10 +5,22 @@ import SectionHeading from '../components/SectionHeading'
 import { assetPath } from '../lib/assets'
 
 const advantages = [
-  'Extensive Network of Employers',
-  'Personalized Job Matches',
-  'Expert Career Guidance',
-  'Support from Application to Placement',
+  {
+    title: 'Extensive Network of Employers',
+    text: 'Connections across the industries and service areas BZ Resources supports.',
+  },
+  {
+    title: 'Personalized Job Matches',
+    text: 'Opportunities considered in light of each candidate’s experience and qualifications.',
+  },
+  {
+    title: 'Expert Career Guidance',
+    text: 'Clear support for job seekers as they navigate available opportunities.',
+  },
+  {
+    title: 'Application to Placement Support',
+    text: 'Hands-on guidance throughout the staffing and placement process.',
+  },
 ]
 
 const industries = [
@@ -46,10 +58,11 @@ function WhyBZPage() {
                 as="article"
                 className="advantage-card"
                 delay={(index % 4) as 0 | 1 | 2 | 3}
-                key={advantage}
+                key={advantage.title}
               >
                 <span>{String(index + 1).padStart(2, '0')}</span>
-                <h2>{advantage}</h2>
+                <h2>{advantage.title}</h2>
+                <p>{advantage.text}</p>
               </Reveal>
             ))}
           </div>
@@ -90,7 +103,7 @@ function WhyBZPage() {
         </div>
       </section>
 
-      <section className="section">
+      <section className="section section-soft">
         <div className="section-inner">
           <SectionHeading
             eyebrow="Industries"

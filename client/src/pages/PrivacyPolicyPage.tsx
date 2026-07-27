@@ -1,3 +1,4 @@
+import CallToAction from '../components/CallToAction'
 import PageHero from '../components/PageHero'
 import Reveal from '../components/Reveal'
 
@@ -46,7 +47,7 @@ function PrivacyPolicyPage() {
     <>
       <PageHero eyebrow="Privacy Policy" title="Privacy Policy" />
 
-      <section className="section">
+      <section className="section section-soft">
         <Reveal className="section-inner policy-content">
           <p>
             This page informs visitors about policies for the collection, use,
@@ -76,6 +77,13 @@ function PrivacyPolicyPage() {
           </section>
         </Reveal>
       </section>
+
+      <CallToAction
+        title="Questions about this policy?"
+        text="Contact BZ Resources if you have a question or suggestion about how information is handled."
+        linkLabel="Contact Us"
+        to="/contact"
+      />
     </>
   )
 }

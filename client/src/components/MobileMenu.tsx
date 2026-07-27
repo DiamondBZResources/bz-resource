@@ -8,7 +8,11 @@ type MobileMenuProps = {
 
 function MobileMenu({ open, onClose }: MobileMenuProps) {
   return (
-    <div className={open ? 'mobile-panel open' : 'mobile-panel'} id="mobile-menu">
+    <div
+      aria-hidden={!open}
+      className={open ? 'mobile-panel open' : 'mobile-panel'}
+      id="mobile-menu"
+    >
       <nav aria-label="Mobile navigation">
         {primaryNavigation.map((item) => (
           <NavLink
@@ -16,16 +20,22 @@ function MobileMenu({ open, onClose }: MobileMenuProps) {
             end={item.path === '/'}
             key={item.path}
             onClick={onClose}
+            tabIndex={open ? 0 : -1}
             to={item.path}
           >
             {item.label}
           </NavLink>
         ))}
-        <a href={requestProposalUrl} onClick={onClose} rel="noreferrer" target="_blank">
+        <a
+          className="mobile-proposal-link"
+          href={requestProposalUrl}
+          onClick={onClose}
+          rel="noopener noreferrer"
+          tabIndex={open ? 0 : -1}
+          target="_blank"
+        >
           Request for Proposal
         </a>
-        <button type="button">English</button>
-        <button type="button">Español</button>
       </nav>
     </div>
   )
