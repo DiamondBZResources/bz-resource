@@ -1,5 +1,8 @@
 import { Link } from 'react-router-dom'
+import brandLogo from '../assets/generated/brand-logo'
+import nwbocLogo from '../assets/generated/nwboc-logo'
 import Reveal from './Reveal'
+import ResponsiveImage from './ResponsiveImage'
 import {
   contactEmail,
   footerNavigation,
@@ -9,19 +12,17 @@ import {
   requestProposalUrl,
   socialLinks,
 } from '../data/navigation'
-import { assetPath } from '../lib/assets'
 
 function Footer() {
   return (
     <Reveal as="footer" className="site-footer">
       <div className="footer-grid">
         <div className="footer-brand">
-          <img
-            className="logo-image"
-            src={assetPath('images/BZ-Logo-transparent.png')}
+          <ResponsiveImage
             alt="BZ Resources"
-            decoding="async"
-            loading="lazy"
+            imageClassName="logo-image"
+            sizes="142px"
+            source={brandLogo}
           />
           <span aria-hidden="true" className="footer-brand-wordmark">Resources</span>
         </div>
@@ -49,12 +50,11 @@ function Footer() {
               {officeLocations[0].lines[1]}
             </p>
           </address>
-          <img
-            className="footer-certification image-contain"
+          <ResponsiveImage
             alt="NWBOC Women Business Enterprise certification"
-            decoding="async"
-            loading="lazy"
-            src={assetPath('images/NWBOC-Logo-480x191.webp')}
+            imageClassName="footer-certification image-contain"
+            sizes="200px"
+            source={nwbocLogo}
           />
         </div>
 

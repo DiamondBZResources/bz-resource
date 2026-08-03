@@ -1,6 +1,7 @@
 import CallToAction from '../components/CallToAction'
 import PageHero from '../components/PageHero'
 import Reveal from '../components/Reveal'
+import ResponsiveImage from '../components/ResponsiveImage'
 import SectionHeading from '../components/SectionHeading'
 import { services } from '../data/services'
 
@@ -53,14 +54,11 @@ function ServicesPage() {
                 key={service.title}
               >
                 <div className="service-detail-image-frame">
-                  <img
-                    className="image-cover"
-                    src={service.image}
+                  <ResponsiveImage
                     alt={service.alt}
-                    decoding="async"
-                    height={service.height}
-                    loading="lazy"
-                    width={service.width}
+                    imageClassName="image-cover"
+                    sizes="(max-width: 760px) calc(100vw - 32px), (max-width: 1050px) 46vw, 560px"
+                    source={service.image}
                   />
                 </div>
                 <div>

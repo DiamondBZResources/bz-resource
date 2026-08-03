@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
+    "lint": "oxlint src",
     "start": "node dist/index.js",
-    "test": "tsx --test src/security.test.ts",
-    "check": "npm run build && npm test"
+    "test": "tsx --test src/*.test.ts",
+    "check": "npm run lint && npm run build && npm test"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +24,9 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^26.1.1",
+    "@types/supertest": "^7.2.1",
+    "oxlint": "^1.76.0",
+    "supertest": "^7.2.2",
     "tsx": "^4.23.0",
     "typescript": "^7.0.2"
   }

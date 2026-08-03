@@ -1,6 +1,6 @@
-import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
-import { assetPath } from '../lib/assets'
+import largeMain from '../assets/generated/large-main'
+import ResponsiveImage from './ResponsiveImage'
 
 type PageHeroProps = {
   eyebrow: string
@@ -8,17 +8,18 @@ type PageHeroProps = {
   description?: string
 }
 
-type PageHeroStyle = CSSProperties & {
-  '--page-hero-background': string
-}
-
 function PageHero({ eyebrow, title, description }: PageHeroProps) {
-  const pageHeroStyle: PageHeroStyle = {
-    '--page-hero-background': `url("${assetPath('images/largeImageForMain.jpg')}")`,
-  }
-
   return (
-    <section className="page-hero" style={pageHeroStyle}>
+    <section className="page-hero">
+      <ResponsiveImage
+        alt=""
+        aria-hidden="true"
+        imageClassName="page-hero-image image-cover"
+        pictureClassName="page-hero-media"
+        priority
+        sizes="100vw"
+        source={largeMain}
+      />
       <div className="section-inner">
         <nav className="breadcrumbs" aria-label="Breadcrumb">
           <Link to="/">Home</Link>

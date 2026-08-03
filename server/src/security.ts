@@ -25,7 +25,7 @@ const forbiddenUploadKeys = new Set([
 ]);
 
 const suspiciousTextPatterns = [
-  /<\s*\/?\s*(?:script|iframe|object|embed|svg|math|link|meta|style|form)\b/i,
+  /<\s*\/?\s*[a-z][^>]*>/i,
   /\bon[a-z]{3,}\s*=/i,
   /(?:javascript|vbscript)\s*:/i,
   /data\s*:\s*(?:text\/html|application\/(?:javascript|x-javascript|octet-stream)|image\/svg\+xml)/i,
@@ -33,16 +33,23 @@ const suspiciousTextPatterns = [
   /[\u202A-\u202E\u2066-\u2069]/,
 ];
 
-type SecurityProof = {
-  startedAt: number;
-  website: string;
-};
+const linkPatterns = [
+  /(?:https?:\/\/|www\.)/i,
+  /\[[^\]]+\]\(\s*[^)]+\)/i,
+  /<\s*a\b/i,
+  /(?:^|[\s(])(?:[a-z0-9-]+\.)+(?:app|ai|biz|co|com|dev|info|io|ly|me|net|org|us)(?:[\x2F?#:]|\b)/i,
+  /\b(?:bit\.ly|buff\.ly|cutt\.ly|goo\.gl|ow\.ly|rebrand\.ly|t\.co|tinyurl\.com)\b/i,
+];
+
+const invisibleCharacters =
+  /(?:\u{00AD}|\u{034F}|\u{061C}|\u{115F}|\u{1160}|\u{17B4}|\u{17B5}|\u{180E}|[\u{200B}-\u{200F}]|[\u{202A}-\u{202E}]|[\u{2060}-\u{206F}]|\u{FEFF})/gu;
 
 type ScanResult =
   | { ok: true }
   | { ok: false; reason: string };
 
 type RateLimitOptions = {
+  keyGenerator?: (request: express.Request) => string[];
   maxRequests: number;
   windowMs: number;
 };
@@ -67,6 +74,23 @@ function isLikelyEncodedBinary(value: string): boolean {
   }
 
   return /^[A-Za-z0-9+/]+={0,2}$/.test(value);
+}
+
+function hasUnsupportedControlCharacters(value: string): boolean {
+  for (const character of value) {
+    const codePoint = character.codePointAt(0) ?? 0;
+    if (
+      codePoint === 0 ||
+      (codePoint >= 1 && codePoint <= 8) ||
+      codePoint === 11 ||
+      codePoint === 12 ||
+      (codePoint >= 14 && codePoint <= 31) ||
+      codePoint === 127
+    ) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function onlyHasKeys(
@@ -103,6 +127,7 @@ function scanJsonPayload(root: unknown): ScanResult {
 
     if (typeof value === "string") {
       totalStringLength += value.length;
+      const canonicalValue = value.normalize("NFKC").replace(invisibleCharacters, "");
 
       if (value.length > MAX_STRING_LENGTH) {
         return { ok: false, reason: "One of the form fields is too long." };
@@ -110,10 +135,19 @@ function scanJsonPayload(root: unknown): ScanResult {
       if (totalStringLength > MAX_TOTAL_STRING_LENGTH) {
         return { ok: false, reason: "The submission is too large." };
       }
-      if (/\u0000/.test(value) || /[\u0001-\u0008\u000B\u000C\u000E-\u001F\u007F]/.test(value)) {
+      if (hasUnsupportedControlCharacters(value)) {
         return { ok: false, reason: "The submission contains unsupported control characters." };
       }
-      if (suspiciousTextPatterns.some((pattern) => pattern.test(value))) {
+      if (
+        !currentKey.toLowerCase().includes("email") &&
+        linkPatterns.some((pattern) => pattern.test(canonicalValue))
+      ) {
+        return {
+          ok: false,
+          reason: "Links are not permitted in this form. Please remove the link and try again.",
+        };
+      }
+      if (suspiciousTextPatterns.some((pattern) => pattern.test(canonicalValue))) {
         return { ok: false, reason: "The submission contains blocked executable content." };
       }
       if (isLikelyEncodedBinary(value)) {
@@ -166,16 +200,26 @@ function scanJsonPayload(root: unknown): ScanResult {
 }
 
 function validateSecurityProof(value: unknown): ScanResult {
-  if (!onlyHasKeys(value, ["startedAt", "website"])) {
+  if (!onlyHasKeys(value, ["consent", "startedAt", "turnstileToken", "website"])) {
     return { ok: false, reason: "The form security check is missing or invalid." };
   }
 
-  const { startedAt, website } = value;
+  const { consent, startedAt, turnstileToken, website } = value;
   if (typeof website !== "string" || website.trim().length > 0) {
     return { ok: false, reason: "The submission was blocked by the spam filter." };
   }
   if (typeof startedAt !== "number" || !Number.isFinite(startedAt)) {
     return { ok: false, reason: "The form security timestamp is invalid." };
+  }
+  if (consent !== true) {
+    return { ok: false, reason: "Please agree to the privacy consent before submitting." };
+  }
+  if (
+    typeof turnstileToken !== "string" ||
+    turnstileToken.length === 0 ||
+    turnstileToken.length > 2_048
+  ) {
+    return { ok: false, reason: "Please complete the security verification and try again." };
   }
 
   const age = Date.now() - startedAt;
@@ -255,14 +299,19 @@ function createRateLimiter(options: RateLimitOptions): express.RequestHandler {
 
   return (req, res, next) => {
     const now = Date.now();
-    const key = `${req.ip || req.socket.remoteAddress || "unknown"}:${req.path}`;
-    const existing = entries.get(key);
-    const entry = !existing || existing.resetAt <= now
-      ? { count: 0, resetAt: now + options.windowMs }
-      : existing;
+    const keys = options.keyGenerator?.(req) ?? [
+      `${req.ip || req.socket.remoteAddress || "unknown"}:${req.path}`,
+    ];
+    const activeEntries = keys.map((key) => {
+      const existing = entries.get(key);
+      const entry = !existing || existing.resetAt <= now
+        ? { count: 0, resetAt: now + options.windowMs }
+        : existing;
 
-    entry.count += 1;
-    entries.set(key, entry);
+      entry.count += 1;
+      entries.set(key, entry);
+      return entry;
+    });
 
     if (entries.size > 10_000) {
       for (const [storedKey, storedEntry] of entries) {
@@ -275,13 +324,21 @@ function createRateLimiter(options: RateLimitOptions): express.RequestHandler {
       }
     }
 
-    const remaining = Math.max(0, options.maxRequests - entry.count);
-    const resetSeconds = Math.max(1, Math.ceil((entry.resetAt - now) / 1_000));
+    const remaining = Math.max(
+      0,
+      Math.min(...activeEntries.map((entry) => options.maxRequests - entry.count)),
+    );
+    const resetSeconds = Math.max(
+      1,
+      Math.ceil(
+        (Math.max(...activeEntries.map((entry) => entry.resetAt)) - now) / 1_000,
+      ),
+    );
     res.set("RateLimit-Limit", String(options.maxRequests));
     res.set("RateLimit-Remaining", String(remaining));
     res.set("RateLimit-Reset", String(resetSeconds));
 
-    if (entry.count > options.maxRequests) {
+    if (activeEntries.some((entry) => entry.count > options.maxRequests)) {
       res.set("Retry-After", String(resetSeconds));
       res.status(429).json({
         ok: false,
@@ -295,62 +352,16 @@ function createRateLimiter(options: RateLimitOptions): express.RequestHandler {
   };
 }
 
-function getAllowedOrigins(rawOrigins: string | undefined): Set<string> {
-  const defaults = [
-    "https://diamondbzresources.github.io",
-    "http://localhost:5173",
-    "http://localhost:5174",
-  ];
-  const configured = rawOrigins
-    ?.split(",")
-    .map((origin) => origin.trim().replace(/\/$/, ""))
-    .filter(Boolean) ?? [];
-
-  return new Set([...defaults, ...configured]);
-}
-
-function createWebhookSignature(
-  payload: string,
-  timestamp: string,
-  signingSecret: string,
-): string {
-  return `sha256=${crypto
-    .createHmac("sha256", signingSecret)
-    .update(`${timestamp}.${payload}`)
-    .digest("hex")}`;
-}
-
-function validateWebhookUrl(rawUrl: string, allowInsecure: boolean): URL {
-  const url = new URL(rawUrl);
-
-  if (url.username || url.password) {
-    throw new Error("Webhook credentials must be supplied through headers, not the URL.");
-  }
-  if (url.protocol !== "https:" && url.protocol !== "http:") {
-    throw new Error("FORM_WEBHOOK_URL must use HTTP or HTTPS.");
-  }
-  if (url.protocol === "http:" && !allowInsecure) {
-    throw new Error("FORM_WEBHOOK_URL must use HTTPS.");
-  }
-  if (!url.hostname) {
-    throw new Error("FORM_WEBHOOK_URL is invalid.");
-  }
-
-  return url;
-}
-
 const security = {
   createHttpsMiddleware,
   createJsonOnlyMiddleware,
   createRateLimiter,
   createRequestIdMiddleware,
   createSecurityHeadersMiddleware,
-  createWebhookSignature,
-  getAllowedOrigins,
+  isPlainObject,
   onlyHasKeys,
   scanJsonPayload,
   validateSecurityProof,
-  validateWebhookUrl,
 };
 
 export = security;

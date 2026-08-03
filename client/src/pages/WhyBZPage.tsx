@@ -1,8 +1,9 @@
+import industryImage from '../assets/generated/industry'
 import CallToAction from '../components/CallToAction'
 import PageHero from '../components/PageHero'
 import Reveal from '../components/Reveal'
+import ResponsiveImage from '../components/ResponsiveImage'
 import SectionHeading from '../components/SectionHeading'
-import { assetPath } from '../lib/assets'
 
 const advantages = [
   {
@@ -71,7 +72,7 @@ function WhyBZPage() {
 
       <section className="section split-dark">
         <div className="section-inner two-column">
-          <Reveal>
+          <Reveal className="split-dark-copy">
             <SectionHeading title="Your Partner in Staffing Success" />
             <p>
               At BZ-Resources, finding the right talent or career opportunity
@@ -87,16 +88,13 @@ function WhyBZPage() {
               is a trusted partner in the journey.
             </p>
           </Reveal>
-          <Reveal delay={1}>
+          <Reveal className="split-dark-media" delay={1}>
             <div className="feature-image-frame">
-              <img
-                className="feature-image image-cover"
+              <ResponsiveImage
                 alt="Warehouse shelves representing industries served"
-                decoding="async"
-                height="1440"
-                loading="lazy"
-                src={assetPath('images/site/industry-scaled.jpeg')}
-                width="2560"
+                imageClassName="feature-image image-cover"
+                sizes="(max-width: 760px) calc(100vw - 32px), (max-width: 1050px) 46vw, 620px"
+                source={industryImage}
               />
             </div>
           </Reveal>

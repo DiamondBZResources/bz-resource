@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
-import BotTrap from '../components/BotTrap'
+import SecureFormControls from '../components/SecureFormControls'
 import {
   CheckboxFieldset,
   QuestionnaireSection,
@@ -12,6 +12,11 @@ import {
   TextField,
 } from '../components/QuestionnaireUI'
 import { postJson } from '../lib/apiClient'
+import {
+  containsBlockedContentDeep,
+  focusFirstInvalidField,
+  linksNotAllowedMessage,
+} from '../lib/formSecurity'
 
 type Language = 'en' | 'es'
 
@@ -283,26 +288,34 @@ const yesNo = {
 
 function NewHireApplicationPage() {
   const { language: languageParam } = useParams()
-  const language = languageParam as Language
+  const languageIsValid = languageParam === 'en' || languageParam === 'es'
+  const language: Language = languageParam === 'es' ? 'es' : 'en'
   const [form, setForm] = useState<NewHireState>(initialState)
   const [step, setStep] = useState(0)
   const [sectionError, setSectionError] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
   const [honeypot, setHoneypot] = useState('')
+  const [privacyConsent, setPrivacyConsent] = useState(false)
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0)
+  const [securityErrors, setSecurityErrors] = useState<{
+    consent?: string
+    turnstile?: string
+  }>({})
   const [startedAt] = useState(() => Date.now())
-
-  if (language !== 'en' && language !== 'es') return <Navigate replace to="/forms" />
-
+  const formRef = useRef<HTMLFormElement>(null)
   const text = copy[language]
   const isSpanish = language === 'es'
+  const steps = useMemo(() => [...text.steps], [text.steps])
+  const allSkills = useMemo(() => skillGroups[language].flatMap((group) => group.options), [language])
+
+  if (!languageIsValid) return <Navigate replace to="/forms" />
+
   document.title = isSpanish ? 'Solicitud de Nuevo Empleado | BZ Resources' : 'New Hire Application | BZ Resources'
   document
     .querySelector('meta[name="description"]')
     ?.setAttribute('content', isSpanish ? 'Complete la solicitud de orientación para nuevos empleados de BZ Resources en inglés o español.' : 'Complete the BZ Resources new hire onboarding application in English or Spanish.')
-  const steps = useMemo(() => [...text.steps], [text.steps])
-  const allSkills = useMemo(() => skillGroups[language].flatMap((group) => group.options), [language])
-
   function update<K extends keyof NewHireState>(field: K, value: NewHireState[K]) {
     setForm((current) => ({ ...current, [field]: value }))
     setSectionError('')
@@ -333,6 +346,7 @@ function NewHireApplicationPage() {
 
   function validateCurrentStep() {
     let valid = true
+    let validationMessage: string = text.required
 
     if (step === 0) {
       valid = orientationItems[language].every((_, index) => form.orientationInitials[String(index)]?.trim())
@@ -385,11 +399,26 @@ function NewHireApplicationPage() {
       valid = Boolean(
         form.applicantSignature.trim() &&
           form.signatureDate &&
-          form.secureDocumentsAcknowledged === 'agreed',
+          form.secureDocumentsAcknowledged === 'agreed' &&
+          privacyConsent &&
+          turnstileToken,
       )
+      setSecurityErrors({
+        ...(!privacyConsent
+          ? { consent: isSpanish ? 'Debe aceptar antes de enviar.' : 'You must agree before submitting.' }
+          : {}),
+        ...(!turnstileToken
+          ? { turnstile: isSpanish ? 'Complete la verificación de seguridad.' : 'Complete the security verification.' }
+          : {}),
+      })
+      if (containsBlockedContentDeep(form)) {
+        valid = false
+        validationMessage = linksNotAllowedMessage
+      }
     }
 
-    setSectionError(valid ? '' : text.required)
+    setSectionError(valid ? '' : validationMessage)
+    if (!valid) focusFirstInvalidField(formRef.current)
     return valid
   }
 
@@ -407,16 +436,24 @@ function NewHireApplicationPage() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (status === 'loading') return
     if (!validateCurrentStep()) return
     setStatus('loading')
     setMessage('')
+    setTurnstileToken('')
+    setTurnstileResetKey((current) => current + 1)
 
     try {
       const result = await postJson<
         {
           application: NewHireState
           language: Language
-          security: { startedAt: number; website: string }
+          security: {
+            consent: boolean
+            startedAt: number
+            turnstileToken: string
+            website: string
+          }
         },
         SubmissionResponse
       >(
@@ -424,7 +461,12 @@ function NewHireApplicationPage() {
         {
           application: form,
           language,
-          security: { startedAt, website: honeypot },
+          security: {
+            consent: privacyConsent,
+            startedAt,
+            turnstileToken,
+            website: honeypot,
+          },
         },
       )
       setStatus(result.ok ? 'success' : 'error')
@@ -471,8 +513,7 @@ function NewHireApplicationPage() {
             </div>
           </aside>
 
-          <form className="questionnaire-form new-hire-form" noValidate onSubmit={handleSubmit}>
-            <BotTrap onChange={setHoneypot} value={honeypot} />
+          <form className="questionnaire-form new-hire-form" noValidate onSubmit={handleSubmit} ref={formRef}>
             {step === 0 ? (
               <QuestionnaireSection
                 description={isSpanish ? 'Escriba sus iniciales al lado de cada documento después de recibirlo, leerlo o completarlo.' : 'Enter your initials beside each item after it has been received, reviewed, or completed.'}
@@ -725,12 +766,30 @@ function NewHireApplicationPage() {
                   <TextField id="applicant-signature" label={isSpanish ? 'Nombre completo como firma' : 'Full name as signature'} onChange={(value) => update('applicantSignature', value)} required value={form.applicantSignature} />
                   <TextField id="signature-date" label={isSpanish ? 'Fecha' : 'Date'} onChange={(value) => update('signatureDate', value)} required type="date" value={form.signatureDate} />
                   <TextField hint={isSpanish ? 'Solo para uso de un representante autorizado de BZ Resources.' : 'For use by an authorized BZ Resources representative only.'} id="office-use-name" label={isSpanish ? 'Representante / uso de oficina' : 'Representative / office use'} onChange={(value) => update('officeUseName', value)} value={form.officeUseName} />
+                  <SecureFormControls
+                    action="new-hire-application"
+                    consent={privacyConsent}
+                    consentError={securityErrors.consent}
+                    honeypot={honeypot}
+                    language={language}
+                    onConsentChange={(checked) => {
+                      setPrivacyConsent(checked)
+                      setSecurityErrors((current) => ({ ...current, consent: undefined }))
+                    }}
+                    onHoneypotChange={setHoneypot}
+                    onTurnstileTokenChange={(token) => {
+                      setTurnstileToken(token)
+                      setSecurityErrors((current) => ({ ...current, turnstile: undefined }))
+                    }}
+                    turnstileResetKey={turnstileResetKey}
+                    turnstileError={securityErrors.turnstile}
+                  />
                 </QuestionnaireSection>
               </>
             ) : null}
 
-            {sectionError ? <p className="form-message error" role="alert">{sectionError}</p> : null}
-            {message ? <p className={status === 'error' ? 'form-message error' : 'form-message'} role="status">{message}</p> : null}
+            {sectionError ? <p className="form-message error" role="alert" tabIndex={-1}>{sectionError}</p> : null}
+            {message ? <p aria-live="polite" className={status === 'error' ? 'form-message error' : 'form-message'} role={status === 'error' ? 'alert' : 'status'} tabIndex={-1}>{message}</p> : null}
 
             <div className="questionnaire-actions">
               <div>

@@ -1,8 +1,9 @@
+import aboutTeam from '../assets/generated/about-team'
 import CallToAction from '../components/CallToAction'
 import PageHero from '../components/PageHero'
 import Reveal from '../components/Reveal'
+import ResponsiveImage from '../components/ResponsiveImage'
 import SectionHeading from '../components/SectionHeading'
-import { assetPath } from '../lib/assets'
 
 function AboutPage() {
   document.title = 'About Us | BZ Resources'
@@ -50,14 +51,11 @@ function AboutPage() {
           </Reveal>
           <Reveal delay={1}>
             <div className="feature-image-frame">
-              <img
-                className="feature-image image-cover"
+              <ResponsiveImage
                 alt="BZ Resources staff supporting business staffing needs"
-                decoding="async"
-                height="630"
-                loading="lazy"
-                src={assetPath('images/site/about-us-pg-sec-img.jpg')}
-                width="750"
+                imageClassName="feature-image image-cover"
+                sizes="(max-width: 760px) calc(100vw - 32px), (max-width: 1050px) 46vw, 560px"
+                source={aboutTeam}
               />
             </div>
           </Reveal>

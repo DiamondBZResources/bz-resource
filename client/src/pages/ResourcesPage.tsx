@@ -1,6 +1,9 @@
+import brochureInside from '../assets/generated/brochure-inside'
+import brochureOutside from '../assets/generated/brochure-outside'
 import CallToAction from '../components/CallToAction'
 import PageHero from '../components/PageHero'
 import Reveal from '../components/Reveal'
+import ResponsiveImage from '../components/ResponsiveImage'
 import { assetPath } from '../lib/assets'
 
 const brochures = [
@@ -8,13 +11,13 @@ const brochures = [
     title: 'BZR Outside Brochure',
     fileType: 'PDF',
     href: assetPath('resources/BZR-Outside-Brochure.pdf'),
-    image: assetPath('images/site/BZR-Outside-Brochure_page-0001.jpg'),
+    image: brochureOutside,
   },
   {
     title: 'BZR Inside Brochure',
     fileType: 'PDF',
     href: assetPath('resources/BZR-Inside-Brochure.pdf'),
-    image: assetPath('images/site/BZR-Inside-Brochure_page-0001.jpg'),
+    image: brochureInside,
   },
 ]
 
@@ -45,14 +48,11 @@ function ResourcesPage() {
               key={brochure.href}
             >
               <div className="card-image-frame">
-                <img
-                  className="image-cover"
-                  src={brochure.image}
+                <ResponsiveImage
                   alt=""
-                  decoding="async"
-                  height="1294"
-                  loading="lazy"
-                  width="1667"
+                  imageClassName="image-cover"
+                  sizes="(max-width: 760px) calc(100vw - 32px), 560px"
+                  source={brochure.image}
                 />
               </div>
               <div>

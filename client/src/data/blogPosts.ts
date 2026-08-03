@@ -1,4 +1,12 @@
-import { assetPath } from '../lib/assets'
+import blogConnecting from '../assets/generated/blog-connecting'
+import blogFloridaMarket from '../assets/generated/blog-florida-market'
+import blogJobAds from '../assets/generated/blog-job-ads'
+import blogMidYear from '../assets/generated/blog-mid-year'
+import blogNavigating from '../assets/generated/blog-navigating'
+import blogSocialNetwork from '../assets/generated/blog-social-network'
+import blogStaffingSimple from '../assets/generated/blog-staffing-simple'
+import blogTransitioning from '../assets/generated/blog-transitioning'
+import type { ResponsiveImageSource } from '../components/ResponsiveImage'
 
 export type BlogPost = {
   title: string
@@ -6,7 +14,7 @@ export type BlogPost = {
   category: string
   author: string
   excerpt: string
-  image: string
+  image: ResponsiveImageSource
   href: string
 }
 
@@ -19,7 +27,7 @@ export const blogPosts: BlogPost[] = [
     author: 'Admin',
     excerpt:
       "Florida's job market has been a consistent headline story, and for good reason. The state is growing fast, the economy...",
-    image: assetPath('images/blog/mid-year-hiring-florida.webp'),
+    image: blogMidYear,
     href: 'https://bz-resources.com/the-mid-year-hiring-reality-in-florida-what-employers-and-job-seekers-are-dealing-with-right-now/',
   },
   {
@@ -30,7 +38,7 @@ export const blogPosts: BlogPost[] = [
     author: 'Admin',
     excerpt:
       'The job market across the United States continues to evolve in 2026, shaped by shifting economic conditions,...',
-    image: assetPath('images/blog/florida-job-market-2026.png'),
+    image: blogFloridaMarket,
     href: 'https://bz-resources.com/floridas-job-market-in-2026-what-makes-it-stand-out-and-what-it-means-for-employers-and-job-seekers/',
   },
   {
@@ -41,7 +49,7 @@ export const blogPosts: BlogPost[] = [
     author: 'Admin',
     excerpt:
       'In today’s dynamic job market, both businesses and job seekers face unique challenges. Companies need skilled talent...',
-    image: assetPath('images/blog/connecting-talent-opportunity.jpeg'),
+    image: blogConnecting,
     href: 'https://bz-resources.com/connecting-talent-and-opportunity-how-bz-resources-bridges-the-gap-for-companies-and-job-seekers/',
   },
   {
@@ -51,7 +59,7 @@ export const blogPosts: BlogPost[] = [
     author: 'Admin',
     excerpt:
       "In today's digital age, social media isn't just a place to share cat videos and vacation photos—it is a powerful tool...",
-    image: assetPath('images/blog/social-network-talent-pool.jpeg'),
+    image: blogSocialNetwork,
     href: 'https://bz-resources.com/tapping-into-the-social-network-talent-pool-for-recruitment-success/',
   },
   {
@@ -61,7 +69,7 @@ export const blogPosts: BlogPost[] = [
     author: 'Admin',
     excerpt:
       "Staffing issues can be the Achilles' heel for any business. The workforce is the lifeblood of an organization, and...",
-    image: assetPath('images/blog/navigating-staffing.jpeg'),
+    image: blogNavigating,
     href: 'https://bz-resources.com/navigating-the-turbulent-waters-of-staffing/',
   },
   {
@@ -71,7 +79,7 @@ export const blogPosts: BlogPost[] = [
     author: 'Admin',
     excerpt:
       'Change is a natural part of growth, and at BZ-Resources.com, we are thrilled to announce our expansion from the sunny...',
-    image: assetPath('images/blog/transitioning-success.png'),
+    image: blogTransitioning,
     href: 'https://bz-resources.com/transitioning-with-success-bz-resources-expands-staffing/',
   },
   {
@@ -81,7 +89,7 @@ export const blogPosts: BlogPost[] = [
     author: 'Admin',
     excerpt:
       "Finding the right candidate for your business can be challenging, and that's where staffing agencies like BZ Resources...",
-    image: assetPath('images/blog/create-job-ads.jpg'),
+    image: blogJobAds,
     href: 'https://bz-resources.com/how-to-create-job-ads-that-will-attract-the-right-candidates/',
   },
   {
@@ -91,7 +99,7 @@ export const blogPosts: BlogPost[] = [
     author: 'Admin',
     excerpt:
       'As a business owner, you’ll know that hiring new staff is one of the most...',
-    image: assetPath('images/blog/staffing-made-simple.jpg'),
+    image: blogStaffingSimple,
     href: 'https://bz-resources.com/staffing-made-simple-with-bz-resources-5-easy-tips-for-better-hiring/',
   },
 ]

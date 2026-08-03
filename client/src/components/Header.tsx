@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
+import brandLogo from '../assets/generated/brand-logo'
 import MobileMenu from './MobileMenu'
+import ResponsiveImage from './ResponsiveImage'
 import useScrolledHeader from '../hooks/useScrolledHeader'
-import { assetPath } from '../lib/assets'
 
 const companyLinks = [
   { label: 'About Us', path: '/about-us' },
@@ -45,6 +46,61 @@ function Header() {
     return () => document.removeEventListener('keydown', closeOnEscape)
   }, [mobileOpen])
 
+  useEffect(() => {
+    function closeDesktopDropdowns(event: PointerEvent) {
+      const target = event.target
+
+      if (!(target instanceof Node)) {
+        return
+      }
+
+      headerRef.current
+        ?.querySelectorAll<HTMLDetailsElement>('.nav-dropdown[open]')
+        .forEach((dropdown) => {
+          if (!dropdown.contains(target)) {
+            dropdown.removeAttribute('open')
+          }
+        })
+    }
+
+    function closeDesktopDropdownOnEscape(event: KeyboardEvent) {
+      if (event.key !== 'Escape') {
+        return
+      }
+
+      const openDropdown = headerRef.current?.querySelector<HTMLDetailsElement>(
+        '.nav-dropdown[open]',
+      )
+
+      if (openDropdown) {
+        openDropdown.removeAttribute('open')
+        openDropdown.querySelector<HTMLElement>('summary')?.focus()
+      }
+    }
+
+    document.addEventListener('pointerdown', closeDesktopDropdowns)
+    document.addEventListener('keydown', closeDesktopDropdownOnEscape)
+
+    return () => {
+      document.removeEventListener('pointerdown', closeDesktopDropdowns)
+      document.removeEventListener('keydown', closeDesktopDropdownOnEscape)
+    }
+  }, [])
+
+  function keepOneDropdownOpen(currentDropdown: HTMLDetailsElement) {
+    if (!currentDropdown.open) {
+      return
+    }
+
+    headerRef.current
+      ?.querySelectorAll<HTMLDetailsElement>('.nav-dropdown[open]')
+      .forEach((dropdown) => {
+        if (dropdown !== currentDropdown) {
+          dropdown.removeAttribute('open')
+        }
+      })
+  }
+
   return (
     <header
       className={scrolled ? 'site-header header-scrolled' : 'site-header'}
@@ -52,13 +108,12 @@ function Header() {
     >
       <div className="header-inner">
         <NavLink className="brand" to="/" aria-label="BZ Resources home">
-          <img
-            className="logo-image"
-            src={assetPath('images/BZ-Logo-transparent.png')}
+          <ResponsiveImage
             alt="BZ Resources"
-            decoding="async"
-            fetchPriority="high"
-            loading="eager"
+            imageClassName="logo-image"
+            priority
+            sizes="72px"
+            source={brandLogo}
           />
           <span aria-hidden="true" className="brand-wordmark">Resources</span>
         </NavLink>
@@ -71,7 +126,10 @@ function Header() {
           >
             Home
           </NavLink>
-          <details className="nav-dropdown">
+          <details
+            className="nav-dropdown"
+            onToggle={(event) => keepOneDropdownOpen(event.currentTarget)}
+          >
             <summary
               className={
                 companyLinks.some((item) => item.path === pathname)
@@ -80,7 +138,7 @@ function Header() {
               }
             >
               Company
-              <span aria-hidden="true">⌄</span>
+              <span aria-hidden="true" className="nav-caret" />
             </summary>
             <div className="dropdown-menu">
               {companyLinks.map((item) => (
@@ -100,7 +158,10 @@ function Header() {
           >
             Services
           </NavLink>
-          <details className="nav-dropdown">
+          <details
+            className="nav-dropdown"
+            onToggle={(event) => keepOneDropdownOpen(event.currentTarget)}
+          >
             <summary
               className={
                 resourceLinks.some((item) => item.path === pathname)
@@ -109,7 +170,7 @@ function Header() {
               }
             >
               Resources
-              <span aria-hidden="true">⌄</span>
+              <span aria-hidden="true" className="nav-caret" />
             </summary>
             <div className="dropdown-menu">
               {resourceLinks.map((item) => (

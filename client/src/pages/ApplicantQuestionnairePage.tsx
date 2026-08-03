@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
-import BotTrap from '../components/BotTrap'
+import SecureFormControls from '../components/SecureFormControls'
 import {
   CheckboxFieldset,
   QuestionnaireSection,
@@ -12,6 +12,11 @@ import {
   TextField,
 } from '../components/QuestionnaireUI'
 import { postJson } from '../lib/apiClient'
+import {
+  containsBlockedContentDeep,
+  focusFirstInvalidField,
+  linksNotAllowedMessage,
+} from '../lib/formSecurity'
 
 type Language = 'en' | 'es'
 
@@ -189,12 +194,21 @@ function validateStep(
     requireText('signatureName')
     requireText('signatureDate')
     requireChoice('consent')
+    if (form.workExperienceNotes.trim().length < 20) {
+      errors.workExperienceNotes = isSpanishMessage(language)
+    }
     if (form.terminated === 'yes' && !form.terminationExplanation.trim()) {
       errors.terminationExplanation = messages.required
     }
   }
 
   return errors
+}
+
+function isSpanishMessage(language: Language) {
+  return language === 'es'
+    ? 'Incluya al menos 20 caracteres.'
+    : 'Please include at least 20 characters.'
 }
 
 function ApplicantQuestionnairePage() {
@@ -206,7 +220,15 @@ function ApplicantQuestionnairePage() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
   const [honeypot, setHoneypot] = useState('')
+  const [privacyConsent, setPrivacyConsent] = useState(false)
+  const [turnstileToken, setTurnstileToken] = useState('')
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0)
+  const [securityErrors, setSecurityErrors] = useState<{
+    consent?: string
+    turnstile?: string
+  }>({})
   const [startedAt] = useState(() => Date.now())
+  const formRef = useRef<HTMLFormElement>(null)
 
   const labels = useMemo(() => copy[language]?.steps ?? copy.en.steps, [language])
 
@@ -231,7 +253,10 @@ function ApplicantQuestionnairePage() {
   function goNext() {
     const nextErrors = validateStep(form, language, step)
     setErrors(nextErrors)
-    if (Object.keys(nextErrors).length > 0) return
+    if (Object.keys(nextErrors).length > 0) {
+      focusFirstInvalidField(formRef.current)
+      return
+    }
     setStep((current) => Math.min(current + 1, labels.length - 1))
     window.scrollTo({ behavior: 'smooth', top: 0 })
   }
@@ -246,17 +271,42 @@ function ApplicantQuestionnairePage() {
     event.preventDefault()
     const nextErrors = validateStep(form, language, 3)
     setErrors(nextErrors)
-    if (Object.keys(nextErrors).length > 0) return
+    const nextSecurityErrors = {
+      ...(!privacyConsent
+        ? { consent: isSpanish ? 'Debe aceptar antes de enviar.' : 'You must agree before submitting.' }
+        : {}),
+      ...(!turnstileToken
+        ? { turnstile: isSpanish ? 'Complete la verificación de seguridad.' : 'Complete the security verification.' }
+        : {}),
+    }
+    setSecurityErrors(nextSecurityErrors)
+    if (containsBlockedContentDeep(form)) {
+      setStatus('error')
+      setMessage(linksNotAllowedMessage)
+      focusFirstInvalidField(formRef.current)
+      return
+    }
+    if (Object.keys(nextErrors).length > 0 || Object.keys(nextSecurityErrors).length > 0) {
+      focusFirstInvalidField(formRef.current)
+      return
+    }
 
     setStatus('loading')
     setMessage('')
+    setTurnstileToken('')
+    setTurnstileResetKey((current) => current + 1)
 
     try {
       const result = await postJson<
         {
           language: Language
           questionnaire: ApplicantState
-          security: { startedAt: number; website: string }
+          security: {
+            consent: boolean
+            startedAt: number
+            turnstileToken: string
+            website: string
+          }
         },
         SubmissionResponse
       >(
@@ -264,7 +314,12 @@ function ApplicantQuestionnairePage() {
         {
           language,
           questionnaire: form,
-          security: { startedAt, website: honeypot },
+          security: {
+            consent: privacyConsent,
+            startedAt,
+            turnstileToken,
+            website: honeypot,
+          },
         },
       )
       setStatus(result.ok ? 'success' : 'error')
@@ -308,8 +363,7 @@ function ApplicantQuestionnairePage() {
             </div>
           </aside>
 
-          <form className="questionnaire-form" noValidate onSubmit={handleSubmit}>
-            <BotTrap onChange={setHoneypot} value={honeypot} />
+          <form className="questionnaire-form" noValidate onSubmit={handleSubmit} ref={formRef}>
             {step === 0 ? (
               <>
                 <QuestionnaireSection
@@ -681,11 +735,38 @@ function ApplicantQuestionnairePage() {
                     value={form.consent}
                   />
                 </QuestionnaireSection>
+                <QuestionnaireSection
+                  title={isSpanish ? 'Privacidad y seguridad' : 'Privacy and security'}
+                >
+                  <SecureFormControls
+                    action="applicant-questionnaire"
+                    consent={privacyConsent}
+                    consentError={securityErrors.consent}
+                    honeypot={honeypot}
+                    language={language}
+                    onConsentChange={(checked) => {
+                      setPrivacyConsent(checked)
+                      setSecurityErrors((current) => ({ ...current, consent: undefined }))
+                    }}
+                    onHoneypotChange={setHoneypot}
+                    onTurnstileTokenChange={(token) => {
+                      setTurnstileToken(token)
+                      setSecurityErrors((current) => ({ ...current, turnstile: undefined }))
+                    }}
+                    turnstileResetKey={turnstileResetKey}
+                    turnstileError={securityErrors.turnstile}
+                  />
+                </QuestionnaireSection>
               </>
             ) : null}
 
             {message ? (
-              <p className={status === 'error' ? 'form-message error' : 'form-message'} role="status">
+              <p
+                aria-live="polite"
+                className={status === 'error' ? 'form-message error' : 'form-message'}
+                role={status === 'error' ? 'alert' : 'status'}
+                tabIndex={-1}
+              >
                 {message}
               </p>
             ) : null}

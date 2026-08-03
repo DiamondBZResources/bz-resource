@@ -1,6 +1,7 @@
 import CallToAction from '../components/CallToAction'
 import PageHero from '../components/PageHero'
 import Reveal from '../components/Reveal'
+import ResponsiveImage from '../components/ResponsiveImage'
 import { blogPosts } from '../data/blogPosts'
 
 function BlogPage() {
@@ -30,12 +31,11 @@ function BlogPage() {
               key={post.href}
             >
               <div className="card-image-frame">
-                <img
-                  className="image-cover"
-                  src={post.image}
+                <ResponsiveImage
                   alt=""
-                  decoding="async"
-                  loading="lazy"
+                  imageClassName="image-cover"
+                  sizes="(max-width: 760px) calc(100vw - 32px), (max-width: 1050px) calc(50vw - 32px), 280px"
+                  source={post.image}
                 />
               </div>
               <div>

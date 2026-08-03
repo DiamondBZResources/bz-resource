@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom'
+import largeMain from '../assets/generated/large-main'
+import nwbocCertificate from '../assets/generated/nwboc-certificate'
 import CallToAction from '../components/CallToAction'
 import Hero from '../components/Hero'
 import Reveal from '../components/Reveal'
+import ResponsiveImage from '../components/ResponsiveImage'
 import SectionHeading from '../components/SectionHeading'
 import { requestProposalUrl } from '../data/navigation'
 import { services } from '../data/services'
-import { assetPath } from '../lib/assets'
 
 const trustPoints = [
   {
@@ -96,14 +98,11 @@ function HomePage() {
           </Reveal>
           <Reveal className="welcome-image-column" delay={1}>
             <div className="welcome-image-frame">
-              <img
-                className="image-cover"
+              <ResponsiveImage
                 alt="Professionals collaborating around a workplace table"
-                decoding="async"
-                height="4480"
-                loading="lazy"
-                src={assetPath('images/largeImageForMain.jpg')}
-                width="6720"
+                imageClassName="image-cover"
+                sizes="(max-width: 760px) calc(100vw - 32px), (max-width: 1050px) 70vw, 590px"
+                source={largeMain}
               />
             </div>
           </Reveal>
@@ -132,14 +131,11 @@ function HomePage() {
                 key={service.title}
               >
                 <div className="service-image-wrap">
-                  <img
-                    className="image-cover"
-                    src={service.image}
+                  <ResponsiveImage
                     alt={service.alt}
-                    decoding="async"
-                    height={service.height}
-                    loading="lazy"
-                    width={service.width}
+                    imageClassName="image-cover"
+                    sizes="(max-width: 760px) calc(100vw - 32px), (max-width: 1050px) calc(50vw - 32px), 280px"
+                    source={service.image}
                   />
                 </div>
                 <div className="service-card-body">
@@ -230,16 +226,15 @@ function HomePage() {
         </div>
       </section>
 
-      <section className="section">
+      <section className="section certification-section">
         <div className="section-inner">
           <Reveal className="certification-card">
             <div className="certification-image">
-              <img
-                className="image-contain"
+              <ResponsiveImage
                 alt="BZ Resources NWBOC woman-owned business certification"
-                decoding="async"
-                loading="lazy"
-                src={assetPath('images/NWBOCCertifwomenowned.jpg')}
+                imageClassName="image-contain"
+                sizes="(max-width: 760px) calc(100vw - 72px), (max-width: 1050px) 48vw, 650px"
+                source={nwbocCertificate}
               />
             </div>
             <div className="certification-copy">

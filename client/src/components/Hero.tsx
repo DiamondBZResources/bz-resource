@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
+import heroStaffing from '../assets/generated/hero-staffing'
 import { requestProposalUrl } from '../data/navigation'
-import { assetPath } from '../lib/assets'
+import ResponsiveImage from './ResponsiveImage'
 
 function Hero() {
   return (
@@ -35,15 +36,12 @@ function Hero() {
 
         <div className="hero-feature">
           <div className="hero-image-frame">
-            <img
-              className="hero-feature-image image-cover"
+            <ResponsiveImage
               alt="Business professionals meeting in a modern workplace"
-              decoding="async"
-              fetchPriority="high"
-              height="4000"
-              loading="eager"
-              src={assetPath('images/satisfyAllYourStaffing.jpg')}
-              width="6000"
+              imageClassName="hero-feature-image image-cover"
+              priority
+              sizes="(max-width: 760px) calc(100vw - 32px), (max-width: 1050px) 70vw, 560px"
+              source={heroStaffing}
             />
           </div>
         </div>

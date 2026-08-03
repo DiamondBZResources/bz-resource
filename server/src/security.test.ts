@@ -39,14 +39,28 @@ test("blocks prototype pollution keys", () => {
 
 test("validates the bot trap and completion timestamp", () => {
   const valid = security.validateSecurityProof({
+    consent: true,
     startedAt: Date.now() - 2_000,
+    turnstileToken: "test-token",
     website: "",
   });
   const bot = security.validateSecurityProof({
+    consent: true,
     startedAt: Date.now() - 2_000,
+    turnstileToken: "test-token",
     website: "https://spam.invalid",
   });
 
   assert.deepEqual(valid, { ok: true });
   assert.equal(bot.ok, false);
+});
+
+test("blocks links, HTML, and invisible-character bypasses", () => {
+  const link = security.scanJsonPayload({ message: "Visit https://example.invalid" });
+  const html = security.scanJsonPayload({ message: "<script>alert(1)</script>" });
+  const bypass = security.scanJsonPayload({ message: "Visit h\u200Bttps://example.invalid" });
+
+  assert.equal(link.ok, false);
+  assert.equal(html.ok, false);
+  assert.equal(bypass.ok, false);
 });

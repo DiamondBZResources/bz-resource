@@ -9,7 +9,9 @@ type SectionHeadingProps = {
 
 function SectionHeading({ eyebrow, title, children }: SectionHeadingProps) {
   return (
-    <Reveal className="section-heading">
+    <Reveal
+      className={children ? 'section-heading' : 'section-heading section-heading-solo'}
+    >
       <div>
         {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
         <h2>{title}</h2>

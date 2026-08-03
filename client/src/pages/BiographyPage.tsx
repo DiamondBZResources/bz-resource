@@ -1,7 +1,8 @@
+import ownerVeronica from '../assets/generated/owner-veronica'
 import CallToAction from '../components/CallToAction'
 import PageHero from '../components/PageHero'
 import Reveal from '../components/Reveal'
-import { assetPath } from '../lib/assets'
+import ResponsiveImage from '../components/ResponsiveImage'
 
 function BiographyPage() {
   document.title = 'Meet The Owner | BZ Resources'
@@ -24,14 +25,11 @@ function BiographyPage() {
         <div className="section-inner two-column owner-layout">
           <Reveal>
             <div className="owner-image-frame">
-              <img
-                className="owner-image image-contain"
+              <ResponsiveImage
                 alt="Veronica Lake, founder and owner of BZ Resources"
-                decoding="async"
-                height="495"
-                loading="lazy"
-                src={assetPath('images/site/meet-owner-veronica-lake.png')}
-                width="541"
+                imageClassName="owner-image image-contain"
+                sizes="(max-width: 760px) calc(100vw - 32px), 540px"
+                source={ownerVeronica}
               />
             </div>
           </Reveal>
