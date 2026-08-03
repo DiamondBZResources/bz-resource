@@ -3094,3 +3094,338 @@ textarea:focus-visible {
   opacity: 0 !important;
   pointer-events: none !important;
 }
+
+/* Homepage banner */
+
+.home-hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  min-height: clamp(570px, 72vh, 760px);
+  overflow: hidden;
+  color: var(--bz-white);
+  background: var(--bz-charcoal-dark);
+}
+
+.home-hero-media,
+.home-hero-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.home-hero-media {
+  z-index: -3;
+}
+
+.home-hero-media .responsive-picture {
+  width: 100%;
+  height: 100%;
+}
+
+.home-hero-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 42%;
+  transform: scale(1.015);
+  animation: homeHeroImageEnter 900ms var(--motion-ease) both;
+}
+
+.home-hero-overlay {
+  z-index: -2;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(11, 24, 35, 0.96) 0%,
+      rgba(18, 39, 57, 0.91) 36%,
+      rgba(20, 43, 64, 0.66) 62%,
+      rgba(15, 31, 46, 0.3) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(11, 18, 24, 0.08) 0%,
+      rgba(11, 18, 24, 0.2) 58%,
+      rgba(11, 18, 24, 0.54) 100%
+    );
+}
+
+.home-hero::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 3;
+  height: 5px;
+  content: "";
+  background: var(--bz-blue);
+}
+
+.home-hero-accent {
+  position: absolute;
+  z-index: -1;
+  right: clamp(40px, 8vw, 130px);
+  bottom: clamp(45px, 8vw, 100px);
+  width: clamp(170px, 22vw, 330px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(190, 211, 255, 0.36);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 28px rgba(190, 211, 255, 0.035),
+    0 0 0 62px rgba(190, 211, 255, 0.025);
+  pointer-events: none;
+}
+
+.home-hero-inner {
+  display: flex;
+  min-height: inherit;
+  align-items: center;
+  padding-top: clamp(74px, 9vw, 122px);
+  padding-bottom: clamp(76px, 9vw, 124px);
+}
+
+.home-hero-copy {
+  width: min(720px, 68%);
+}
+
+.home-hero-eyebrow {
+  margin: 0 0 18px;
+  color: #bfd1f7;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  animation: heroFadeRise 520ms var(--motion-ease) both;
+}
+
+.home-hero-copy h1 {
+  max-width: 780px;
+  margin: 0;
+  color: var(--bz-white);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(3.4rem, 6.6vw, 6.7rem);
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 0.96;
+  text-wrap: balance;
+  animation: heroFadeRise 560ms 70ms var(--motion-ease) both;
+}
+
+.home-hero-copy h1 span {
+  display: block;
+  color: #c5d7fb;
+}
+
+.home-hero-copy h1::after {
+  display: block;
+  width: 82px;
+  height: 4px;
+  margin-top: 28px;
+  content: "";
+  background: var(--bz-blue);
+}
+
+.home-hero-description {
+  max-width: 650px;
+  margin: 26px 0 0;
+  color: #e0e8f0;
+  font-size: clamp(1.05rem, 1.4vw, 1.24rem);
+  line-height: 1.72;
+  animation: heroFadeRise 560ms 140ms var(--motion-ease) both;
+}
+
+.home-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 13px;
+  margin-top: 34px;
+  animation: heroFadeRise 560ms 210ms var(--motion-ease) both;
+}
+
+.home-hero-outline-button {
+  color: var(--bz-white);
+  border-color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(7px);
+}
+
+.home-hero-outline-button:hover,
+.home-hero-outline-button:focus-visible {
+  color: var(--bz-white);
+  border-color: var(--bz-white);
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.home-hero-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  margin-top: 31px;
+  color: #d4dfeb;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  animation: heroFadeRise 560ms 280ms var(--motion-ease) both;
+}
+
+.home-hero-details span {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.home-hero-details span::before {
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  content: "";
+  background: var(--bz-blue);
+}
+
+@media (max-width: 1080px) {
+  .home-hero {
+    min-height: 650px;
+  }
+
+  .home-hero-copy {
+    width: min(760px, 82%);
+  }
+
+  .home-hero-image {
+    object-position: 58% center;
+  }
+
+  .home-hero-overlay {
+    background:
+      linear-gradient(
+        90deg,
+        rgba(11, 24, 35, 0.96) 0%,
+        rgba(18, 39, 57, 0.9) 48%,
+        rgba(20, 43, 64, 0.55) 76%,
+        rgba(15, 31, 46, 0.35) 100%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(11, 18, 24, 0.08),
+        rgba(11, 18, 24, 0.5)
+      );
+  }
+}
+
+@media (max-width: 760px) {
+  .home-hero {
+    min-height: 650px;
+  }
+
+  .home-hero-inner {
+    align-items: flex-end;
+    padding-top: 90px;
+    padding-bottom: 70px;
+  }
+
+  .home-hero-copy {
+    width: 100%;
+  }
+
+  .home-hero-image {
+    object-position: 62% center;
+  }
+
+  .home-hero-overlay {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(11, 24, 35, 0.28) 0%,
+        rgba(11, 24, 35, 0.7) 42%,
+        rgba(11, 24, 35, 0.96) 100%
+      );
+  }
+
+  .home-hero-copy h1 {
+    font-size: clamp(3rem, 14vw, 4.8rem);
+    line-height: 0.98;
+  }
+
+  .home-hero-description {
+    font-size: 1.04rem;
+    line-height: 1.65;
+  }
+
+  .home-hero-actions {
+    display: grid;
+    width: 100%;
+  }
+
+  .home-hero-actions .button {
+    width: 100%;
+  }
+
+  .home-hero-details {
+    gap: 10px 18px;
+  }
+
+  .home-hero-accent {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .home-hero {
+    min-height: 630px;
+  }
+
+  .home-hero-inner {
+    padding-top: 82px;
+    padding-bottom: 58px;
+  }
+
+  .home-hero-copy h1 {
+    font-size: clamp(2.75rem, 14vw, 3.65rem);
+    overflow-wrap: normal;
+  }
+
+  .home-hero-copy h1::after {
+    margin-top: 22px;
+  }
+
+  .home-hero-description {
+    margin-top: 21px;
+  }
+
+  .home-hero-actions {
+    margin-top: 27px;
+  }
+
+  .home-hero-details {
+    display: grid;
+    margin-top: 25px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero-image,
+  .home-hero-eyebrow,
+  .home-hero-copy h1,
+  .home-hero-description,
+  .home-hero-actions,
+  .home-hero-details {
+    opacity: 1;
+    animation: none;
+    transform: none;
+  }
+}
+
+@keyframes homeHeroImageEnter {
+  from {
+    opacity: 0.72;
+    transform: scale(1.055);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.015);
+  }
+}
