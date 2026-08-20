@@ -1,20 +1,17 @@
 {
-  "name": "server",
-  "version": "1.0.0",
-  "description": "",
+  "name": "bz-resource-forms-api",
+  "version": "2.0.0",
+  "private": true,
+  "type": "commonjs",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.json",
     "lint": "oxlint src",
     "start": "node dist/index.js",
     "test": "tsx --test src/*.test.ts",
     "check": "npm run lint && npm run build && npm test"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",

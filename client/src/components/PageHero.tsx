@@ -1,37 +1,21 @@
-import { Link } from 'react-router-dom'
-import largeMain from '../assets/generated/large-main'
-import ResponsiveImage from './ResponsiveImage'
-
-type PageHeroProps = {
+type Props = {
   eyebrow: string
   title: string
-  description?: string
+  text?: string
+  meta?: string
 }
 
-function PageHero({ eyebrow, title, description }: PageHeroProps) {
+export default function PageHero({ eyebrow, title, text, meta }: Props) {
   return (
     <section className="page-hero">
-      <ResponsiveImage
-        alt=""
-        aria-hidden="true"
-        imageClassName="page-hero-image image-cover"
-        pictureClassName="page-hero-media"
-        priority
-        sizes="100vw"
-        source={largeMain}
-      />
-      <div className="section-inner">
-        <nav className="breadcrumbs" aria-label="Breadcrumb">
-          <Link to="/">Home</Link>
-          <span aria-hidden="true">/</span>
-          <span aria-current="page">{eyebrow}</span>
-        </nav>
-        <p className="eyebrow">{eyebrow}</p>
-        <h1>{title}</h1>
-        {description ? <p>{description}</p> : null}
+      <div className="container-wide page-hero-inner">
+        <div className="page-hero-copy">
+          <p className="eyebrow">{eyebrow}</p>
+          <h1>{title}</h1>
+          {text && <p>{text}</p>}
+        </div>
+        {meta && <div className="page-hero-meta">{meta}</div>}
       </div>
     </section>
   )
 }
-
-export default PageHero

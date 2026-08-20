@@ -1,60 +1,61 @@
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy, Suspense } from 'react'
 import { Route, Routes } from 'react-router-dom'
+import HomePage from './pages/HomePage'
+import CookieConsent from './components/CookieConsent'
 import Footer from './components/Footer'
 import Header from './components/Header'
 import PageTransition from './components/PageTransition'
+import RoutePreloader from './components/RoutePreloader'
+import ScrollMotion from './components/ScrollMotion'
 import ScrollToTop from './components/ScrollToTop'
-import HomePage from './pages/HomePage'
-import './App.css'
 
 const AboutPage = lazy(() => import('./pages/AboutPage'))
-const ApplicantQuestionnairePage = lazy(() => import('./pages/ApplicantQuestionnairePage'))
+const WhyBZPage = lazy(() => import('./pages/WhyBZPage'))
+const ServicesPage = lazy(() => import('./pages/ServicesPage'))
 const BiographyPage = lazy(() => import('./pages/BiographyPage'))
+const ResourcesPage = lazy(() => import('./pages/ResourcesPage'))
 const BlogPage = lazy(() => import('./pages/BlogPage'))
 const ContactPage = lazy(() => import('./pages/ContactPage'))
 const FormsPage = lazy(() => import('./pages/FormsPage'))
+const ApplicantQuestionnairePage = lazy(() => import('./pages/ApplicantQuestionnairePage'))
 const NewHireApplicationPage = lazy(() => import('./pages/NewHireApplicationPage'))
-const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'))
-const ResourcesPage = lazy(() => import('./pages/ResourcesPage'))
-const ServicesPage = lazy(() => import('./pages/ServicesPage'))
-const WhyBZPage = lazy(() => import('./pages/WhyBZPage'))
+const CookiePolicyPage = lazy(() => import('./pages/CookiePolicyPage'))
+const TermsOfUsePage = lazy(() => import('./pages/TermsOfUsePage'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
-function App() {
-  useEffect(() => {
-    document.documentElement.classList.add('reveal-enabled')
-
-    return () => document.documentElement.classList.remove('reveal-enabled')
-  }, [])
-
+export default function App() {
   return (
     <div className="site-shell">
       <ScrollToTop />
+      <RoutePreloader />
+      <ScrollMotion />
       <Header />
       <main>
-        <PageTransition>
-          <Suspense fallback={<div aria-live="polite" className="route-loading">Loading page…</div>}>
+        <Suspense fallback={<div className="route-loading" aria-live="polite">Loading…</div>}>
+          <PageTransition>
             <Routes>
-              <Route element={<HomePage />} path="/" />
-              <Route element={<AboutPage />} path="/about-us" />
-              <Route element={<WhyBZPage />} path="/why-choose-bz" />
-              <Route element={<ServicesPage />} path="/services" />
-              <Route element={<BiographyPage />} path="/biography" />
-              <Route element={<ResourcesPage />} path="/resources" />
-              <Route element={<BlogPage />} path="/blog" />
-              <Route element={<ContactPage />} path="/contact" />
-              <Route element={<FormsPage />} path="/forms" />
-              <Route element={<ApplicantQuestionnairePage />} path="/forms/applicant-questionnaire/:language" />
-              <Route element={<NewHireApplicationPage />} path="/forms/new-hire-application/:language" />
-              <Route element={<PrivacyPolicyPage />} path="/privacy-policy" />
-              <Route element={<NotFoundPage />} path="*" />
+              <Route path="/" element={<HomePage />} />
+              <Route path="/about-us" element={<AboutPage />} />
+              <Route path="/why-choose-bz" element={<WhyBZPage />} />
+              <Route path="/services" element={<ServicesPage />} />
+              <Route path="/biography" element={<BiographyPage />} />
+              <Route path="/resources" element={<ResourcesPage />} />
+              <Route path="/blog" element={<BlogPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/forms" element={<FormsPage />} />
+              <Route path="/forms/applicant-questionnaire/:language" element={<ApplicantQuestionnairePage />} />
+              <Route path="/forms/new-hire-application/:language" element={<NewHireApplicationPage />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+              <Route path="/cookie-policy" element={<CookiePolicyPage />} />
+              <Route path="/terms-of-use" element={<TermsOfUsePage />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
-          </Suspense>
-        </PageTransition>
+          </PageTransition>
+        </Suspense>
       </main>
       <Footer />
+      <CookieConsent />
     </div>
   )
 }
-
-export default App

@@ -1,67 +1,24 @@
-import CallToAction from '../components/CallToAction'
+import { FiArrowUpRight } from 'react-icons/fi'
 import PageHero from '../components/PageHero'
-import Reveal from '../components/Reveal'
 import ResponsiveImage from '../components/ResponsiveImage'
+import FinalCta from '../components/FinalCta'
+import { useLanguage } from '../context/language'
 import { blogPosts } from '../data/blogPosts'
+import { siteContent } from '../data/siteContent'
 
-function BlogPage() {
-  document.title = 'Blog | BZ Resources'
-  document
-    .querySelector('meta[name="description"]')
-    ?.setAttribute(
-      'content',
-      'Read BZ Resources hiring tips and staffing articles from the current public blog index.',
-    )
-
+export default function BlogPage() {
+  const { language } = useLanguage()
+  const copy = siteContent[language].blog
   return (
     <>
-      <PageHero
-        eyebrow="Blog"
-        title="Staffing Insights"
-        description="Current BZ Resources articles are listed with their public destinations."
-      />
-
-      <section className="section section-soft">
-        <div className="section-inner blog-grid">
-          {blogPosts.map((post, index) => (
-            <Reveal
-              as="article"
-              className="blog-card"
-              delay={(index % 4) as 0 | 1 | 2 | 3}
-              key={post.href}
-            >
-              <div className="card-image-frame">
-                <ResponsiveImage
-                  alt=""
-                  imageClassName="image-cover"
-                  sizes="(max-width: 760px) calc(100vw - 32px), (max-width: 1050px) calc(50vw - 32px), 280px"
-                  source={post.image}
-                />
-              </div>
-              <div>
-                <p className="blog-meta">
-                  by {post.author} | {post.date} | {post.category}
-                </p>
-                <h2>{post.title}</h2>
-                <p>{post.excerpt}</p>
-                <a href={post.href} rel="noopener noreferrer" target="_blank">
-                  Read article
-                  <span className="sr-only">, opens on the current public site</span>
-                </a>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      <CallToAction
-        title="Turn staffing insight into a stronger next step"
-        text="Talk with BZ Resources about the hiring and workforce challenges facing your organization."
-        linkLabel="Contact BZ Resources"
-        to="/contact"
-      />
+      <PageHero eyebrow={copy.hero[0]} title={copy.hero[1]} text={copy.hero[2]} meta={language === 'es' ? 'Contratación • Personal • Carreras' : 'Hiring • Staffing • Careers'} />
+      <section className="section"><div className="container-wide"><div className="section-heading-row"><div><p className="eyebrow">{copy.eyebrow}</p><h2>{copy.title}</h2></div></div>
+        <div className="blog-list">{blogPosts.map((post, index) => <article key={post.title} className={index === 0 ? 'featured' : ''}>
+          <a className="blog-image" href={post.href} target="_blank" rel="noreferrer"><ResponsiveImage alt="" imageClassName="cover-image" sizes={index === 0 ? '(max-width: 900px) 100vw, 55vw' : '(max-width: 700px) 100vw, 33vw'} source={post.image} /></a>
+          <div className="blog-copy"><div className="blog-meta"><span>{post.category}</span><time>{post.date}</time></div><h2><a href={post.href} target="_blank" rel="noreferrer">{post.title}</a></h2><p>{post.excerpt}</p><a className="text-link" href={post.href} target="_blank" rel="noreferrer">{copy.read}<FiArrowUpRight /></a></div>
+        </article>)}</div>
+      </div></section>
+      <FinalCta copy={copy.cta} />
     </>
   )
 }
-
-export default BlogPage

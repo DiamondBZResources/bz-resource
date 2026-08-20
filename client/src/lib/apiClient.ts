@@ -1,92 +1,27 @@
-import { cachedGet, defaultCacheTtlMs } from './cache'
-
 const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim() ?? ''
 
-function normalizeEndpoint(endpoint: string): string {
-  return endpoint.startsWith('/') ? endpoint : `/${endpoint}`
+function apiUrl(endpoint: string) {
+  const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
+  if (!configuredApiBaseUrl) return import.meta.env.DEV ? path : undefined
+  return `${configuredApiBaseUrl.replace(/\/+$/, '')}${path}`
 }
 
-export function getApiUrl(endpoint: string): string | undefined {
-  const normalizedEndpoint = normalizeEndpoint(endpoint)
-
-  if (!configuredApiBaseUrl) {
-    return import.meta.env.DEV ? normalizedEndpoint : undefined
-  }
-
-  return `${configuredApiBaseUrl.replace(/\/+$/, '')}${normalizedEndpoint}`
-}
-
-async function parseJsonResponse<T>(response: Response): Promise<T> {
-  const result = (await response.json()) as T
-
-  if (!response.ok) {
-    const message =
-      typeof result === 'object' &&
-      result !== null &&
-      'message' in result &&
-      typeof result.message === 'string'
-        ? result.message
-        : 'The request could not be completed.'
-
-    throw new Error(message)
-  }
-
-  return result
-}
-
-export async function getJson<T>(
-  endpoint: string,
-  options: {
-    cacheKey: string
-    ttlMs?: number
-  },
-): Promise<T> {
-  const url = getApiUrl(endpoint)
-
-  if (!url) {
-    throw new Error('This API is not configured for the production website.')
-  }
-
-  return cachedGet(
-    options.cacheKey,
-    async () => {
-      const response = await fetch(url, {
-        cache: 'no-cache',
-        headers: { Accept: 'application/json' },
-        method: 'GET',
-      })
-
-      return parseJsonResponse<T>(response)
-    },
-    options.ttlMs ?? defaultCacheTtlMs,
-  )
-}
-
-export async function postJson<TRequest extends object, TResponse>(
-  endpoint: string,
-  body: TRequest,
-): Promise<TResponse> {
-  const url = getApiUrl(endpoint)
-
-  if (!url) {
-    throw new Error(
-      'Online form submission is not configured for this website yet. Please contact BZ Resources by phone or email.',
-    )
-  }
+export async function postJson<TRequest extends object, TResponse>(endpoint: string, body: TRequest): Promise<TResponse> {
+  const url = apiUrl(endpoint)
+  if (!url) throw new Error('Online form submission is not configured yet. Please contact BZ Resources by phone or email.')
 
   const response = await fetch(url, {
+    method: 'POST',
+    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
     cache: 'no-store',
     credentials: 'omit',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
     redirect: 'error',
     referrerPolicy: 'strict-origin-when-cross-origin',
-    signal: AbortSignal.timeout(20_000),
+    signal: AbortSignal.timeout(20000),
   })
 
-  return parseJsonResponse<TResponse>(response)
+  const result = (await response.json().catch(() => ({ message: 'The server returned an unexpected response.' }))) as TResponse & { message?: string }
+  if (!response.ok) throw new Error(result.message || 'The request could not be completed.')
+  return result
 }

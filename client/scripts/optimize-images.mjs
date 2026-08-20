@@ -28,7 +28,7 @@ const jobs = [
   { id: 'nwboc-certificate', input: 'NWBOCCertifwomenowned.jpg', kind: 'webp-graphic', widths: [480, 768, 1024, 1440] },
   { id: 'nwboc-logo', input: 'NWBOC-Logo-480x191.webp', kind: 'webp-graphic', widths: [240, 480] },
   { id: 'about-team', input: 'site/about-us-pg-sec-img.jpg', kind: 'photo', widths: [480, 750] },
-  { id: 'owner-veronica', input: 'site/meet-owner-veronica-lake.png', kind: 'png', widths: [541] },
+  { id: 'brand-lockup', input: 'site/meet-owner-veronica-lake.png', kind: 'png', widths: [541] },
   { id: 'industry', input: 'site/industry-scaled.jpeg', kind: 'photo', widths: [480, 768, 1024, 1440, 1920] },
   { id: 'brochure-outside', input: 'site/BZR-Outside-Brochure_page-0001.jpg', kind: 'document', widths: [480, 768, 1024, 1440] },
   { id: 'brochure-inside', input: 'site/BZR-Inside-Brochure_page-0001.jpg', kind: 'document', widths: [480, 768, 1024, 1440] },

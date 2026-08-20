@@ -1,49 +1,44 @@
-type RuntimeConfig = {
-  allowedOrigins: Set<string>;
-  azureClientId: string;
-  azureClientSecret: string;
-  azureTenantId: string;
-  bodyLimit: string;
-  duplicateWindowMs: number;
-  enforceHttps: boolean;
-  formRecipientEmail: string;
-  graphSenderEmail: string;
-  isProduction: boolean;
-  port: number;
-  rateLimitMax: number;
-  rateLimitWindowMs: number;
-  turnstileAllowedHostnames: Set<string>;
-  turnstileSecretKey: string;
-};
+export type FormKind = 'contact' | 'applicant-questionnaire' | 'new-hire-application'
 
-type EmailContent = {
-  html: string;
-  plainText: string;
-  subject: string;
-};
+export type RuntimeConfig = {
+  allowedOrigins: Set<string>
+  azureTenantId: string
+  azureClientId: string
+  azureClientSecret: string
+  graphSenderEmail: string
+  formRecipientEmail: string
+  recaptchaSecretKey: string
+  recaptchaAllowedHostnames: Set<string>
+  duplicateWindowMs: number
+  enforceHttps: boolean
+  rateLimitMax: number
+  rateLimitWindowMs: number
+  bodyLimit: string
+  port: number
+  isProduction: boolean
+}
 
-type FormKind = "contact" | "applicant-questionnaire" | "new-hire-application";
+export type SecurityProof = {
+  consent: true
+  startedAt: number
+  website: string
+  recaptchaToken: string
+}
 
-type NormalizedSubmission = {
-  company: string;
-  details: Record<string, unknown>;
-  email: string;
-  formKind: FormKind;
-  formName: string;
-  inquiryCategory: string;
-  message: string;
-  name: string;
-  phone: string;
-};
+export type NormalizedSubmission = {
+  formKind: FormKind
+  language: 'en' | 'es'
+  name: string
+  email: string
+  phone: string
+  company?: string
+  category?: string
+  details: Record<string, string>
+}
 
-type ValidationResult =
-  | { ok: true; submission: NormalizedSubmission }
-  | { ok: false; message: string };
-
-export type {
-  EmailContent,
-  FormKind,
-  NormalizedSubmission,
-  RuntimeConfig,
-  ValidationResult,
-};
+export type MailContent = {
+  subject: string
+  html: string
+  text: string
+  replyTo?: string
+}

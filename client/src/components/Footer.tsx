@@ -1,104 +1,64 @@
 import { Link } from 'react-router-dom'
-import brandLogo from '../assets/generated/brand-logo'
-import nwbocLogo from '../assets/generated/nwboc-logo'
-import Reveal from './Reveal'
-import ResponsiveImage from './ResponsiveImage'
-import {
-  contactEmail,
-  footerNavigation,
-  officeLocations,
-  phoneDisplay,
-  phoneHref,
-  requestProposalUrl,
-  socialLinks,
-} from '../data/navigation'
+import { FiArrowUpRight, FiFacebook, FiInstagram, FiLinkedin } from 'react-icons/fi'
+import Brand from './Brand'
+import { useLanguage } from '../context/language'
+import { contactEmail, officeLocations, phoneDisplay, phoneHref, socialLinks } from '../data/navigation'
+import { siteContent } from '../data/siteContent'
 
-function Footer() {
+const socialIcons = [FiFacebook, FiLinkedin, FiInstagram]
+
+export default function Footer() {
+  const { language } = useLanguage()
+  const copy = siteContent[language]
+  const companyLinks = [
+    [copy.nav.about, '/about-us'], [copy.nav.why, '/why-choose-bz'],
+    [language === 'es' ? 'Conozca a la Dueña' : 'Meet the Owner', '/biography'],
+    [copy.nav.resources, '/resources'], [copy.nav.forms, '/forms'],
+  ] as const
+  const openCookiePreferences = () => window.dispatchEvent(new Event('bz-open-cookie-preferences'))
+
   return (
-    <Reveal as="footer" className="site-footer">
-      <div className="footer-grid">
-        <div className="footer-brand">
-          <ResponsiveImage
-            alt="BZ Resources"
-            imageClassName="logo-image"
-            sizes="142px"
-            source={brandLogo}
-          />
-          <span aria-hidden="true" className="footer-brand-wordmark">Resources</span>
+    <footer className="site-footer">
+      <div className="footer-main container-wide">
+        <div className="footer-brand-column">
+          <Brand />
+          <p>{copy.footer.description}</p>
+          <div className="social-row">
+            {socialLinks.map((item, index) => {
+              const Icon = socialIcons[index]
+              return <a key={item.label} href={item.href} target="_blank" rel="noreferrer" aria-label={item.label}><Icon /></a>
+            })}
+          </div>
         </div>
-
-        <div className="footer-column">
-          <h2 className="footer-heading">Quick Links</h2>
-          <nav className="footer-links" aria-label="Footer navigation">
-            {footerNavigation.map((item) => (
-              <Link key={item.path} to={item.path}>
-                {item.label}
-              </Link>
-            ))}
-            <a href={requestProposalUrl} rel="noopener noreferrer" target="_blank">
-              Request For Proposal
-            </a>
-          </nav>
-        </div>
-
-        <div className="footer-column">
-          <h2 className="footer-heading">Corporate Office</h2>
-          <address className="footer-contact">
-            <p>
-              {officeLocations[0].lines[0]}
-              <br />
-              {officeLocations[0].lines[1]}
-            </p>
-          </address>
-          <ResponsiveImage
-            alt="NWBOC Women Business Enterprise certification"
-            imageClassName="footer-certification image-contain"
-            sizes="200px"
-            source={nwbocLogo}
-          />
-        </div>
-
-        <div className="footer-column">
-          <div className="contact-detail">
-            <h2 className="footer-heading">Phone</h2>
-            <a href={phoneHref}>{phoneDisplay}</a>
-          </div>
-          <div className="contact-detail">
-            <h2 className="footer-heading">Email</h2>
-            <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
-          </div>
-          <div className="contact-detail">
-            <h2 className="footer-heading">Hours of Operation</h2>
-            <p>Monday through Friday, 8:00 a.m. to 5:00 p.m.</p>
-          </div>
-          <div className="footer-social">
-            <h2 className="footer-social-title">Share</h2>
-            <div className="social-links" aria-label="Social media">
-              {socialLinks.map((item) => (
-                <a
-                  aria-label={item.label}
-                  className="social-link"
-                  href={item.href}
-                  key={item.label}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  {item.label}
-                </a>
-              ))}
-            </div>
-          </div>
+        <nav className="footer-column" aria-label={language === 'es' ? 'Empresa' : 'Company'}>
+          <h2>{copy.footer.company}</h2>
+          {companyLinks.map(([label, path]) => <Link key={path} to={path}>{label}</Link>)}
+        </nav>
+        <nav className="footer-column" aria-label={copy.footer.services}>
+          <h2>{copy.footer.services}</h2>
+          {(language === 'es'
+            ? ['Reclutamiento', 'Evaluación', 'Capacitación', 'Seguimiento', 'Nómina', 'Compensación laboral']
+            : ['Recruiting', 'Screening', 'Training', 'Tracking', 'Payroll', "Workers' Comp"]
+          ).map((label) => <Link key={label} to="/services">{label}</Link>)}
+        </nav>
+        <div className="footer-column footer-contact">
+          <h2>{copy.footer.contact}</h2>
+          <a href={phoneHref}>{phoneDisplay}</a>
+          <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+          <address>{officeLocations[0].lines[0]}<br />{officeLocations[0].lines[1]}</address>
+          <Link className="footer-office-link" to="/contact">{language === 'es' ? 'Ver todas las oficinas' : 'View all offices'} <FiArrowUpRight /></Link>
         </div>
       </div>
-
-      <div className="footer-bottom">
-        <div className="footer-bottom-inner">
-          <span>Copyright © 2026 BZ Resources. All Rights Reserved.</span>
-          <Link to="/privacy-policy">Privacy Policy</Link>
-        </div>
+      <div className="footer-bottom container-wide">
+        <span>© {new Date().getFullYear()} BZ Resources. {copy.footer.copyright}</span>
+        <span>{copy.footer.nationwide}</span>
+        <nav className="footer-legal" aria-label={language === 'es' ? 'Políticas legales' : 'Legal policies'}>
+          <Link to="/privacy-policy">{copy.footer.privacy}</Link>
+          <Link to="/cookie-policy">{language === 'es' ? 'Política de Cookies' : 'Cookie Policy'}</Link>
+          <Link to="/terms-of-use">{language === 'es' ? 'Términos de Uso' : 'Terms of Use'}</Link>
+          <button type="button" onClick={openCookiePreferences}>{language === 'es' ? 'Preferencias de cookies' : 'Cookie preferences'}</button>
+        </nav>
       </div>
-    </Reveal>
+    </footer>
   )
 }
-
-export default Footer

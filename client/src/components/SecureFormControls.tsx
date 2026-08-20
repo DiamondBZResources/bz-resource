@@ -1,68 +1,28 @@
 import { Link } from 'react-router-dom'
-import BotTrap from './BotTrap'
-import Turnstile from './Turnstile'
+import Recaptcha from './Recaptcha'
+import type { Language } from '../context/language'
 
-type SecureFormControlsProps = {
-  action: string
+type Props = {
   consent: boolean
-  consentError?: string
   honeypot: string
-  language?: 'en' | 'es'
-  onConsentChange: (checked: boolean) => void
+  language?: Language
+  onConsentChange: (value: boolean) => void
   onHoneypotChange: (value: string) => void
-  onTurnstileTokenChange: (token: string) => void
-  turnstileResetKey: number
-  turnstileError?: string
+  onTokenChange: (token: string) => void
+  resetKey?: number
 }
 
-function SecureFormControls({
-  action,
-  consent,
-  consentError,
-  honeypot,
-  language = 'en',
-  onConsentChange,
-  onHoneypotChange,
-  onTurnstileTokenChange,
-  turnstileResetKey,
-  turnstileError,
-}: SecureFormControlsProps) {
-  const isSpanish = language === 'es'
-
+export default function SecureFormControls({ consent, honeypot, language = 'en', onConsentChange, onHoneypotChange, onTokenChange, resetKey = 0 }: Props) {
   return (
-    <div className="secure-form-controls">
-      <BotTrap onChange={onHoneypotChange} value={honeypot} />
-      <label className="form-consent">
-        <input
-          aria-describedby={consentError ? 'privacy-consent-error' : undefined}
-          aria-invalid={Boolean(consentError)}
-          checked={consent}
-          onChange={(event) => onConsentChange(event.target.checked)}
-          required
-          type="checkbox"
-        />
-        <span>
-          {isSpanish
-            ? 'Acepto que BZ Resources use la información proporcionada para responder a mi consulta.'
-            : 'I agree that BZ Resources may use the information provided to respond to my inquiry.'}{' '}
-          <Link to="/privacy-policy">
-            {isSpanish ? 'Política de Privacidad' : 'Privacy Policy'}
-          </Link>
-        </span>
+    <div className="secure-controls">
+      <div className="bot-trap" aria-hidden="true">
+        <label>Website<input tabIndex={-1} autoComplete="off" value={honeypot} onChange={(e) => onHoneypotChange(e.target.value)} /></label>
+      </div>
+      <label className="consent-row">
+        <input type="checkbox" checked={consent} onChange={(e) => onConsentChange(e.target.checked)} required />
+        <span>{language === 'es' ? 'Acepto que BZ Resources use esta información para responder y procesar mi solicitud.' : 'I agree that BZ Resources may use this information to respond to and process my request.'} <Link to="/privacy-policy">{language === 'es' ? 'Política de Privacidad' : 'Privacy Policy'}</Link></span>
       </label>
-      {consentError ? (
-        <span className="field-error" id="privacy-consent-error">
-          {consentError}
-        </span>
-      ) : null}
-      <Turnstile
-        action={action}
-        key={`${action}-${turnstileResetKey}`}
-        onTokenChange={onTurnstileTokenChange}
-      />
-      {turnstileError ? <span className="field-error">{turnstileError}</span> : null}
+      <Recaptcha language={language} onTokenChange={onTokenChange} resetKey={resetKey} />
     </div>
   )
 }
-
-export default SecureFormControls

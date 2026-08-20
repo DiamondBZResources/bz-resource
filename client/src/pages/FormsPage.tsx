@@ -1,109 +1,63 @@
 import { Link } from 'react-router-dom'
-import CallToAction from '../components/CallToAction'
+import { FiArrowRight, FiCheck, FiFileText, FiShield, FiUserCheck } from 'react-icons/fi'
 import PageHero from '../components/PageHero'
-import Reveal from '../components/Reveal'
+import FinalCta from '../components/FinalCta'
+import { useLanguage } from '../context/language'
+import { siteContent } from '../data/siteContent'
 
-const formGroups = [
-  {
-    eyebrow: 'Before placement',
-    title: 'Applicant Questionnaire',
-    description:
-      'Tell BZ Resources about your availability, preferred shifts, work environment preferences, equipment, and relevant experience.',
-    meta: ['About 8–12 minutes', 'Four guided steps', 'English or Spanish'],
-    paths: {
-      en: '/forms/applicant-questionnaire/en',
-      es: '/forms/applicant-questionnaire/es',
+export default function FormsPage() {
+  const { language } = useLanguage()
+  const copy = siteContent[language].forms
+  const es = language === 'es'
+  const choices = [
+    {
+      copy: copy.applicant,
+      icon: FiFileText,
+      kicker: es ? 'Para candidatos' : 'For applicants',
+      slug: 'applicant-questionnaire',
+      features: es
+        ? ['Comparta su experiencia y disponibilidad', 'Complete el formulario en inglés o español', 'Envíelo mediante nuestro proceso seguro']
+        : ['Share your experience and availability', 'Complete the form in English or Spanish', 'Submit through our secure online process'],
     },
-  },
-  {
-    eyebrow: 'After hiring instructions',
-    title: 'New Hire Application',
-    description:
-      'Complete the guided employee application, orientation checklist, skills inventory, policy acknowledgments, safety review, and final packet summary.',
-    meta: ['Multi-step onboarding', 'Progress guidance', 'English or Spanish'],
-    paths: {
-      en: '/forms/new-hire-application/en',
-      es: '/forms/new-hire-application/es',
+    {
+      copy: copy.newHire,
+      icon: FiUserCheck,
+      kicker: es ? 'Para nuevos empleados invitados' : 'For invited new hires',
+      slug: 'new-hire-application',
+      features: es
+        ? ['Proporcione la información solicitada', 'Complete el paquete solo cuando se le indique', 'Elija su idioma preferido']
+        : ['Provide the requested onboarding information', 'Complete the packet only when instructed', 'Choose your preferred language'],
     },
-  },
-]
-
-function FormsPage() {
-  document.title = 'Forms | BZ Resources'
-  document
-    .querySelector('meta[name="description"]')
-    ?.setAttribute(
-      'content',
-      'Complete BZ Resources applicant questionnaires and new hire onboarding forms in English or Spanish.',
-    )
-
+  ]
   return (
     <>
-      <PageHero
-        eyebrow="Application Center"
-        title="Applicant and New Hire Forms"
-        description="Complete the right form directly within the BZ Resources website. Each form includes clear steps, progress guidance, review tools, and English or Spanish options."
-      />
-
-      <section className="section forms-section">
-        <div className="section-inner forms-intro-grid">
-          <div>
-            <p className="eyebrow">Choose your next step</p>
-            <h2>One clear application center</h2>
-          </div>
-          <p>
-            Start with the Applicant Questionnaire when exploring placement opportunities.
-            Complete the New Hire Application only after a BZ Resources representative asks
-            you to begin onboarding.
-          </p>
+      <PageHero eyebrow={copy.hero[0]} title={copy.hero[1]} text={copy.hero[2]} meta={es ? 'Inglés • Español • Envío seguro' : 'English • Español • Secure online'} />
+      <section className="section forms-choice-section">
+        <div className="container-wide forms-intro">
+          <FiShield aria-hidden="true" />
+          <div><strong>{es ? 'Antes de comenzar' : 'Before you begin'}</strong><p>{copy.caution}</p></div>
         </div>
-
-        <div className="section-inner forms-grid forms-modern-grid">
-          {formGroups.map((group, index) => (
-            <Reveal
-              as="article"
-              className="form-card form-portal-card"
-              delay={(index % 4) as 0 | 1 | 2 | 3}
-              key={group.title}
-            >
-              <div className="form-portal-number" aria-hidden="true">0{index + 1}</div>
-              <div className="form-portal-body">
-                <p className="eyebrow">{group.eyebrow}</p>
-                <h2>{group.title}</h2>
-                <p>{group.description}</p>
-                <ul className="form-meta-list">
-                  {group.meta.map((item) => <li key={item}>{item}</li>)}
-                </ul>
-                <div className="form-language-actions">
-                  <Link className="button" to={group.paths.en}>Start in English</Link>
-                  <Link className="button button-outline-dark" to={group.paths.es}>Comenzar en Español</Link>
+        <div className="container-wide form-choice-list">
+          {choices.map(({ copy: item, features, icon: Icon, kicker, slug }, index) => {
+            const [title, text] = item
+            return <article key={slug}>
+              <div className="form-choice-topline"><span>{String(index + 1).padStart(2, '0')}</span><Icon aria-hidden="true" /></div>
+              <p className="form-choice-kicker">{kicker}</p>
+              <h2>{title}</h2>
+              <p className="form-choice-description">{text}</p>
+              <ul>{features.map((feature) => <li key={feature}><FiCheck aria-hidden="true" />{feature}</li>)}</ul>
+              <div className="form-choice-footer">
+                <span>{es ? 'Seleccione un idioma' : 'Choose a language'}</span>
+                <div className="language-actions">
+                  <Link className="button" to={`/forms/${slug}/en`}>English <FiArrowRight /></Link>
+                  <Link className="button button-outline" to={`/forms/${slug}/es`}>Español <FiArrowRight /></Link>
                 </div>
               </div>
-            </Reveal>
-          ))}
-        </div>
-
-        <div className="section-inner forms-security-note">
-          <div>
-            <strong>Protecting applicant information</strong>
-            <p>
-              Do not enter Social Security numbers, banking details, medical records, or
-              identity-document numbers into the public website forms. BZ Resources will
-              provide a separate approved process when sensitive onboarding documents are required.
-              Attachments and file uploads are disabled on these public forms.
-            </p>
-          </div>
+            </article>
+          })}
         </div>
       </section>
-
-      <CallToAction
-        title="Not sure which form applies to you?"
-        text="Contact BZ Resources before completing a new hire packet or when you need help with any application question."
-        linkLabel="Contact BZ Resources"
-        to="/contact"
-      />
+      <FinalCta copy={copy.cta} />
     </>
   )
 }
-
-export default FormsPage

@@ -1,4 +1,4 @@
-import png541 from './owner-veronica-541.png'
+import png541 from './brand-lockup-541.png'
 import type { ResponsiveImageSource } from '../../../components/ResponsiveImage'
 
 const image = {

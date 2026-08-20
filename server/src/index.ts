@@ -1,12 +1,10 @@
-import dotenv = require("dotenv");
-import appModule = require("./app.js");
-import configModule = require("./config.js");
+import 'dotenv/config'
+import { createApp } from './app'
+import { loadConfig } from './config'
 
-dotenv.config();
-
-const config = configModule.loadConfig();
-const app = appModule.createApp(config);
+const config = loadConfig()
+const app = createApp(config)
 
 app.listen(config.port, () => {
-  console.log(`Server running on port ${config.port}`);
-});
+  console.log(`BZ Resources forms API listening on http://localhost:${config.port}`)
+})

@@ -1,66 +1,36 @@
-import assert = require("node:assert/strict");
-import test = require("node:test");
-import security = require("./security.js");
+import assert = require('node:assert/strict')
+import test = require('node:test')
+import { scanJsonPayload } from './security.js'
+import { validateSecurity } from './validation.js'
 
-test("accepts ordinary questionnaire data", () => {
-  const result = security.scanJsonPayload({
-    applicantName: "Example Applicant",
-    shifts: ["first", "second"],
-    workExperienceNotes: "Warehouse and inventory experience.",
-  });
+test('accepts ordinary questionnaire data and reCAPTCHA tokens', () => {
+  const result = scanJsonPayload({ applicantName: 'Example Applicant', shifts: ['first', 'second'], security: { recaptchaToken: 'A'.repeat(4_096) } })
+  assert.deepEqual(result, { ok: true })
+})
 
-  assert.deepEqual(result, { ok: true });
-});
+test('blocks executable markup', () => {
+  assert.equal(scanJsonPayload({ comments: '<script src="https://example.invalid/payload.js"></script>' }).ok, false)
+})
 
-test("blocks executable markup", () => {
-  const result = security.scanJsonPayload({
-    comments: '<script src="https://example.invalid/payload.js"></script>',
-  });
+test('blocks file-like fields and encoded binary', () => {
+  assert.equal(scanJsonPayload({ filename: 'payload.exe' }).ok, false)
+  assert.equal(scanJsonPayload({ notes: 'A'.repeat(4_096) }).ok, false)
+})
 
-  assert.equal(result.ok, false);
-});
+test('blocks prototype pollution keys', () => {
+  const payload = JSON.parse('{"__proto__":{"polluted":true}}') as unknown
+  assert.equal(scanJsonPayload(payload).ok, false)
+})
 
-test("blocks file-like fields and encoded binary", () => {
-  const fileField = security.scanJsonPayload({ filename: "payload.exe" });
-  const encodedFile = security.scanJsonPayload({
-    notes: "A".repeat(4_096),
-  });
+test('validates the bot trap and completion timestamp', () => {
+  const valid = validateSecurity({ consent: true, startedAt: Date.now() - 2_000, recaptchaToken: 'test-token-value', website: '' })
+  const bot = validateSecurity({ consent: true, startedAt: Date.now() - 2_000, recaptchaToken: 'test-token-value', website: 'spam' })
+  assert.equal(valid.ok, true)
+  assert.equal(bot.ok, false)
+})
 
-  assert.equal(fileField.ok, false);
-  assert.equal(encodedFile.ok, false);
-});
-
-test("blocks prototype pollution keys", () => {
-  const payload = JSON.parse('{"__proto__":{"polluted":true}}') as unknown;
-  const result = security.scanJsonPayload(payload);
-
-  assert.equal(result.ok, false);
-});
-
-test("validates the bot trap and completion timestamp", () => {
-  const valid = security.validateSecurityProof({
-    consent: true,
-    startedAt: Date.now() - 2_000,
-    turnstileToken: "test-token",
-    website: "",
-  });
-  const bot = security.validateSecurityProof({
-    consent: true,
-    startedAt: Date.now() - 2_000,
-    turnstileToken: "test-token",
-    website: "https://spam.invalid",
-  });
-
-  assert.deepEqual(valid, { ok: true });
-  assert.equal(bot.ok, false);
-});
-
-test("blocks links, HTML, and invisible-character bypasses", () => {
-  const link = security.scanJsonPayload({ message: "Visit https://example.invalid" });
-  const html = security.scanJsonPayload({ message: "<script>alert(1)</script>" });
-  const bypass = security.scanJsonPayload({ message: "Visit h\u200Bttps://example.invalid" });
-
-  assert.equal(link.ok, false);
-  assert.equal(html.ok, false);
-  assert.equal(bypass.ok, false);
-});
+test('blocks links, HTML, and invisible-character bypasses', () => {
+  assert.equal(scanJsonPayload({ message: 'Visit https://example.invalid' }).ok, false)
+  assert.equal(scanJsonPayload({ message: '<script>alert(1)</script>' }).ok, false)
+  assert.equal(scanJsonPayload({ message: 'Visit h\u200Bttps://example.invalid' }).ok, false)
+})

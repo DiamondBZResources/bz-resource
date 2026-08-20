@@ -1,89 +1,28 @@
-import brochureInside from '../assets/generated/brochure-inside'
-import brochureOutside from '../assets/generated/brochure-outside'
-import CallToAction from '../components/CallToAction'
+import { Link } from 'react-router-dom'
+import { FiArrowUpRight, FiDownload } from 'react-icons/fi'
 import PageHero from '../components/PageHero'
-import Reveal from '../components/Reveal'
-import ResponsiveImage from '../components/ResponsiveImage'
-import { assetPath } from '../lib/assets'
+import FinalCta from '../components/FinalCta'
+import { useLanguage } from '../context/language'
+import { siteContent } from '../data/siteContent'
 
-const brochures = [
-  {
-    title: 'BZR Outside Brochure',
-    fileType: 'PDF',
-    href: assetPath('resources/BZR-Outside-Brochure.pdf'),
-    image: brochureOutside,
-  },
-  {
-    title: 'BZR Inside Brochure',
-    fileType: 'PDF',
-    href: assetPath('resources/BZR-Inside-Brochure.pdf'),
-    image: brochureInside,
-  },
-]
-
-function ResourcesPage() {
-  document.title = 'Resources | BZ Resources'
-  document
-    .querySelector('meta[name="description"]')
-    ?.setAttribute(
-      'content',
-      'Download BZ Resources brochure materials for staffing and workforce support.',
-    )
-
+export default function ResourcesPage() {
+  const { language } = useLanguage()
+  const copy = siteContent[language].resources
+  const brochureOutside = `${import.meta.env.BASE_URL}resources/BZR-Outside-Brochure.pdf`
+  const brochureInside = `${import.meta.env.BASE_URL}resources/BZR-Inside-Brochure.pdf`
   return (
     <>
-      <PageHero
-        eyebrow="Resources"
-        title="Brochure"
-        description="Public BZ Resources brochure materials, stored locally for reliable access."
-      />
-
-      <section className="section section-soft">
-        <div className="section-inner resource-grid">
-          {brochures.map((brochure, index) => (
-            <Reveal
-              as="article"
-              className="resource-card"
-              delay={(index % 4) as 0 | 1 | 2 | 3}
-              key={brochure.href}
-            >
-              <div className="card-image-frame">
-                <ResponsiveImage
-                  alt=""
-                  imageClassName="image-cover"
-                  sizes="(max-width: 760px) calc(100vw - 32px), 560px"
-                  source={brochure.image}
-                />
-              </div>
-              <div>
-                <p className="eyebrow">{brochure.fileType}</p>
-                <h2>{brochure.title}</h2>
-                <a className="button" download href={brochure.href}>
-                  Download PDF
-                </a>
-                <a
-                  className="text-link"
-                  href={brochure.href}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  Open in browser
-                  <span className="sr-only">, opens in a new tab</span>
-                </a>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      <CallToAction
-        title="Have a question about BZ Resources?"
-        text="Reach out for help choosing the right staffing or workforce service for your business."
-        linkLabel="Contact Us"
-        to="/contact"
-      />
+      <PageHero eyebrow={copy.hero[0]} title={copy.hero[1]} text={copy.hero[2]} meta={language === 'es' ? 'Para empleadores y candidatos' : 'For employers and job seekers'} />
+      <section className="section"><div className="container-wide resource-list">
+        {copy.items.map(([title, text, label, href], index) => (
+          <article key={title}>
+            <span>{String(index + 1).padStart(2, '0')}</span>
+            <div><h2>{title}</h2><p>{text}</p></div>
+            {href === 'brochure' ? <div className="resource-downloads"><a href={brochureOutside} target="_blank" rel="noreferrer">{label}<FiDownload /></a><a href={brochureInside} target="_blank" rel="noreferrer">{language === 'es' ? 'Ver interior' : 'View inside'}<FiArrowUpRight /></a></div> : <Link className="text-link" to={href}>{label}<FiArrowUpRight /></Link>}
+          </article>
+        ))}
+      </div></section>
+      <FinalCta copy={copy.cta} />
     </>
   )
 }
-
-export default ResourcesPage

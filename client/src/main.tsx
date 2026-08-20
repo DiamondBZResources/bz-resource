@@ -1,22 +1,19 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { HashRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import App from './App'
-import './index.css'
+import { LanguageProvider } from './context/LanguageContext'
 import { registerServiceWorker } from './lib/registerServiceWorker'
-
-const rootElement = document.getElementById('root')
-
-if (!rootElement) {
-  throw new Error('Root element was not found.')
-}
-
-createRoot(rootElement).render(
-  <StrictMode>
-    <HashRouter>
-      <App />
-    </HashRouter>
-  </StrictMode>,
-)
+import './styles.css'
 
 registerServiceWorker()
+
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <LanguageProvider>
+        <App />
+      </LanguageProvider>
+    </BrowserRouter>
+  </StrictMode>,
+)

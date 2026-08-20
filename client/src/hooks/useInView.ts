@@ -21,8 +21,8 @@ function useInView<TElement extends Element>({
     }
 
     if (!('IntersectionObserver' in window)) {
-      setInView(true)
-      return undefined
+      const timer = globalThis.setTimeout(() => setInView(true), 0)
+      return () => globalThis.clearTimeout(timer)
     }
 
     const observer = new IntersectionObserver(

@@ -1,5 +1,5 @@
 {
-  "configSignature": "60018c368549cd6062f33137e2ba2968e0c49cf5d657f63fefc231628907a7a6",
+  "configSignature": "169c29bd3261b78dc24d851c0c6a5dc5e2d66e1dd8091afd715a717628dc37bf",
   "generatedFiles": [
     "brand-logo/brand-logo-64.webp",
     "brand-logo/brand-logo-64.png",
@@ -133,8 +133,8 @@
     "about-team/about-team-750.webp",
     "about-team/about-team-750.jpg",
     "about-team/index.ts",
-    "owner-veronica/owner-veronica-541.png",
-    "owner-veronica/index.ts",
+    "brand-lockup/brand-lockup-541.png",
+    "brand-lockup/index.ts",
     "industry/industry-480.avif",
     "industry/industry-480.webp",
     "industry/industry-480.jpg",

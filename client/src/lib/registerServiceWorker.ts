@@ -10,6 +10,7 @@ export function registerServiceWorker(): void {
     navigator.serviceWorker
       .register(serviceWorkerUrl)
       .then((registration) => {
+        if (registration.waiting) registration.waiting.postMessage({ type: 'SKIP_WAITING' })
         registration.update().catch(() => undefined)
         window.setInterval(() => {
           registration.update().catch(() => undefined)

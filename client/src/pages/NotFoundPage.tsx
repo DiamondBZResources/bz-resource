@@ -1,30 +1,3 @@
 import { Link } from 'react-router-dom'
-import PageHero from '../components/PageHero'
-import Reveal from '../components/Reveal'
-
-function NotFoundPage() {
-  document.title = 'Page Not Found | BZ Resources'
-  document
-    .querySelector('meta[name="description"]')
-    ?.setAttribute('content', 'The requested BZ Resources page was not found.')
-
-  return (
-    <>
-      <PageHero
-        eyebrow="Not Found"
-        title="Page Not Found"
-        description="The page you requested may have moved or is no longer available."
-      />
-      <section className="section section-soft">
-        <Reveal className="section-inner content-panel">
-          <p>Use the navigation to continue exploring BZ Resources.</p>
-          <Link className="button" to="/">
-            Return Home
-          </Link>
-        </Reveal>
-      </section>
-    </>
-  )
-}
-
-export default NotFoundPage
+import { useLanguage } from '../context/language'
+export default function NotFoundPage(){const{language}=useLanguage();const es=language==='es';return <section className="not-found"><span>404</span><h1>{es?'Esta página tomó otro turno.':'This page took another shift.'}</h1><p>{es?'Volvamos a un lugar útil.':'Let’s get you somewhere useful.'}</p><Link className="button" to="/">{es?'Volver al inicio':'Back Home'}</Link></section>}

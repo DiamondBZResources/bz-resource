@@ -5,63 +5,26 @@ export const contactEmail = 'vlake@bz-resources.com'
 export const phoneDisplay = '(800) 418-6889'
 export const phoneHref = 'tel:8004186889'
 
-export const socialLinks = [
-  {
-    label: 'Facebook',
-    href: 'https://www.facebook.com/BZ-Resources-103903385502299',
-  },
-  {
-    label: 'LinkedIn',
-    href: 'https://www.linkedin.com/company/52196209/',
-  },
-  {
-    label: 'Instagram',
-    href: 'https://www.instagram.com/bzresourcesstaffing/',
-  },
-]
-
 export const primaryNavigation = [
   { label: 'Home', path: '/' },
-  { label: 'About Us', path: '/about-us' },
+  { label: 'About', path: '/about-us' },
   { label: 'Why BZ', path: '/why-choose-bz' },
   { label: 'Services', path: '/services' },
-  { label: 'Meet the Owner', path: '/biography' },
   { label: 'Resources', path: '/resources' },
-  { label: 'Blog', path: '/blog' },
-  { label: 'Contact Us', path: '/contact' },
   { label: 'Forms', path: '/forms' },
-]
-
-export const footerNavigation = [
-  { label: 'Home', path: '/' },
-  { label: 'About Us', path: '/about-us' },
-  { label: 'Services', path: '/services' },
-  { label: 'Meet The Owner', path: '/biography' },
   { label: 'Contact', path: '/contact' },
-  { label: 'Blog', path: '/blog' },
-  { label: 'Forms', path: '/forms' },
-  { label: 'Privacy Policy', path: '/privacy-policy' },
+] as const
+
+export const socialLinks = [
+  { label: 'Facebook', href: 'https://www.facebook.com/BZ-Resources-103903385502299' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/company/52196209/' },
+  { label: 'Instagram', href: 'https://www.instagram.com/bzresourcesstaffing/' },
 ]
 
 export const officeLocations = [
-  {
-    label: 'Corporate Office',
-    lines: ['1026 SW 9th St, Suite B', 'Ocala, FL 34471'],
-  },
-  {
-    label: 'New York Office',
-    lines: ['411 Lafayette Street, 6th Floor', 'New York, NY 10003'],
-  },
-  {
-    label: 'Arkansas Office',
-    lines: ['400 W. Capitol Avenue, Suite 1700', 'Little Rock, AR 72201'],
-  },
-  {
-    label: 'Tennessee Office',
-    lines: ['6000 Poplar Avenue, Suite 250', 'Memphis, TN 38119'],
-  },
-  {
-    label: 'Ohio Office',
-    lines: ['100 E. Campus View Boulevard, Suite #250', 'Columbus, OH 43235'],
-  },
+  { label: 'Corporate Office', labelEs: 'Oficina principal', lines: ['1026 SW 9th St, Suite B', 'Ocala, FL 34471'] },
+  { label: 'New York Office', labelEs: 'Oficina de Nueva York', lines: ['411 Lafayette Street, 6th Floor', 'New York, NY 10003'] },
+  { label: 'Arkansas Office', labelEs: 'Oficina de Arkansas', lines: ['400 W. Capitol Avenue, Suite 1700', 'Little Rock, AR 72201'] },
+  { label: 'Tennessee Office', labelEs: 'Oficina de Tennessee', lines: ['6000 Poplar Avenue, Suite 250', 'Memphis, TN 38119'] },
+  { label: 'Ohio Office', labelEs: 'Oficina de Ohio', lines: ['100 E. Campus View Boulevard, Suite #250', 'Columbus, OH 43235'] },
 ]
