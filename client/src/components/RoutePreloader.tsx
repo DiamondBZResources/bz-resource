@@ -30,7 +30,12 @@ export default function RoutePreloader() {
   useEffect(() => {
     const preload = (event: Event) => {
       const route = getRouteFromLink(event.target)
-      if (route) void routeLoaders[route]?.()
+      if (!route) return
+      if (route.startsWith('/services/')) {
+        void import('../pages/ServicePage')
+        return
+      }
+      void routeLoaders[route]?.()
     }
 
     document.addEventListener('pointerover', preload, { passive: true })

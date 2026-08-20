@@ -6,7 +6,11 @@ import trainingImage from '../assets/generated/training'
 import workersCompImage from '../assets/generated/workers-comp'
 import type { ResponsiveImageSource } from '../components/ResponsiveImage'
 
+export const serviceSlugs = ['recruiting', 'screening', 'training', 'tracking', 'payroll', 'workers-comp'] as const
+export type ServiceSlug = (typeof serviceSlugs)[number]
+
 export type Service = {
+  slug: ServiceSlug
   title: string
   titleEs: string
   image: ResponsiveImageSource
@@ -20,6 +24,7 @@ export type Service = {
 
 export const services: Service[] = [
   {
+    slug: 'recruiting',
     title: 'Recruiting',
     titleEs: 'Reclutamiento',
     image: recruitmentImage,
@@ -35,6 +40,7 @@ export const services: Service[] = [
       'Una búsqueda enfocada reduce el tiempo revisando candidatos no calificados y ofrece una lista más clara al equipo de contratación.',
   },
   {
+    slug: 'screening',
     title: 'Screening',
     titleEs: 'Evaluación',
     image: screeningImage,
@@ -50,6 +56,7 @@ export const services: Service[] = [
       'La evaluación y verificación tempranas protegen el tiempo de entrevistas y aumentan la confianza en cada conversación.',
   },
   {
+    slug: 'training',
     title: 'Training',
     titleEs: 'Capacitación',
     image: trainingImage,
@@ -65,6 +72,7 @@ export const services: Service[] = [
       'Los empleados mejor preparados pueden contribuir antes, entender expectativas e integrarse con menos fricción.',
   },
   {
+    slug: 'tracking',
     title: 'Tracking',
     titleEs: 'Seguimiento',
     image: trackingImage,
@@ -80,6 +88,7 @@ export const services: Service[] = [
       'Las actualizaciones claras reducen detalles perdidos y mantienen informados a los gerentes desde la colocación.',
   },
   {
+    slug: 'payroll',
     title: 'Payroll',
     titleEs: 'Nómina',
     image: payrollImage,
@@ -95,6 +104,7 @@ export const services: Service[] = [
       'La administración confiable permite que los equipos internos se enfoquen en la operación mientras los procesos esenciales continúan.',
   },
   {
+    slug: 'workers-comp',
     title: "Workers' Comp",
     titleEs: 'Compensación Laboral',
     image: workersCompImage,
@@ -110,3 +120,6 @@ export const services: Service[] = [
       'El apoyo coordinado de riesgos ofrece a empleadores un proceso más claro cuando un incidente requiere atención.',
   },
 ]
+
+export const getServiceBySlug = (slug: string | undefined) => services.find((service) => service.slug === slug)
+export const getServicePath = (service: Pick<Service, 'slug'>) => `/services/${service.slug}`

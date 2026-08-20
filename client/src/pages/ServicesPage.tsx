@@ -4,7 +4,7 @@ import PageHero from '../components/PageHero'
 import ResponsiveImage from '../components/ResponsiveImage'
 import PillarBand from '../components/PillarBand'
 import { useLanguage } from '../context/language'
-import { services } from '../data/services'
+import { getServicePath, services } from '../data/services'
 import { siteContent } from '../data/siteContent'
 
 export default function ServicesPage() {
@@ -23,8 +23,8 @@ export default function ServicesPage() {
             const help = language === 'es' ? service.employerHelpEs : service.employerHelp
             return (
               <article className="service-detail-row" key={service.title}>
-                <div className="service-detail-image"><ResponsiveImage alt={language === 'es' ? service.altEs : service.alt} imageClassName="cover-image" sizes="(max-width: 900px) 100vw, 45vw" source={service.image} /></div>
-                <div className="service-detail-copy"><span className="service-number">{String(index + 1).padStart(2, '0')}</span><h2>{title}</h2><p>{description}</p><div className="employer-help"><strong>{copy.employerLabel}</strong><p>{help}</p></div></div>
+                <div className="service-detail-image service-image-frame"><ResponsiveImage alt={language === 'es' ? service.altEs : service.alt} imageClassName="cover-image" sizes="(max-width: 900px) 100vw, 45vw" source={service.image} /></div>
+                <div className="service-detail-copy"><span className="service-number">{String(index + 1).padStart(2, '0')}</span><h2>{title}</h2><p>{description}</p><div className="employer-help"><strong>{copy.employerLabel}</strong><p>{help}</p></div><Link className="text-link service-detail-link" to={getServicePath(service)}>{siteContent[language].shared.learnMore}<FiArrowRight /></Link></div>
               </article>
             )
           })}

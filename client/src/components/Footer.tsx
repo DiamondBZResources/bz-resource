@@ -3,6 +3,7 @@ import { FiArrowUpRight, FiFacebook, FiInstagram, FiLinkedin } from 'react-icons
 import Brand from './Brand'
 import { useLanguage } from '../context/language'
 import { contactEmail, officeLocations, phoneDisplay, phoneHref, socialLinks } from '../data/navigation'
+import { getServicePath, services } from '../data/services'
 import { siteContent } from '../data/siteContent'
 
 const socialIcons = [FiFacebook, FiLinkedin, FiInstagram]
@@ -36,10 +37,9 @@ export default function Footer() {
         </nav>
         <nav className="footer-column" aria-label={copy.footer.services}>
           <h2>{copy.footer.services}</h2>
-          {(language === 'es'
-            ? ['Reclutamiento', 'Evaluación', 'Capacitación', 'Seguimiento', 'Nómina', 'Compensación laboral']
-            : ['Recruiting', 'Screening', 'Training', 'Tracking', 'Payroll', "Workers' Comp"]
-          ).map((label) => <Link key={label} to="/services">{label}</Link>)}
+          {services.map((service) => (
+            <Link key={service.slug} to={getServicePath(service)}>{language === 'es' ? service.titleEs : service.title}</Link>
+          ))}
         </nav>
         <div className="footer-column footer-contact">
           <h2>{copy.footer.contact}</h2>

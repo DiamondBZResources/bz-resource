@@ -12,6 +12,7 @@ import ScrollToTop from './components/ScrollToTop'
 const AboutPage = lazy(() => import('./pages/AboutPage'))
 const WhyBZPage = lazy(() => import('./pages/WhyBZPage'))
 const ServicesPage = lazy(() => import('./pages/ServicesPage'))
+const ServicePage = lazy(() => import('./pages/ServicePage'))
 const BiographyPage = lazy(() => import('./pages/BiographyPage'))
 const ResourcesPage = lazy(() => import('./pages/ResourcesPage'))
 const BlogPage = lazy(() => import('./pages/BlogPage'))
@@ -39,6 +40,7 @@ export default function App() {
               <Route path="/about-us" element={<AboutPage />} />
               <Route path="/why-choose-bz" element={<WhyBZPage />} />
               <Route path="/services" element={<ServicesPage />} />
+              <Route path="/services/:serviceSlug" element={<ServicePage />} />
               <Route path="/biography" element={<BiographyPage />} />
               <Route path="/resources" element={<ResourcesPage />} />
               <Route path="/blog" element={<BlogPage />} />

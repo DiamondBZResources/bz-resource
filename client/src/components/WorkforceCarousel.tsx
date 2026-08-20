@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { FiArrowUpRight } from 'react-icons/fi'
 import ResponsiveImage from './ResponsiveImage'
 import { useLanguage } from '../context/language'
-import { services } from '../data/services'
+import { getServicePath, services } from '../data/services'
 import { siteContent } from '../data/siteContent'
 
 export default function WorkforceCarousel() {
@@ -15,7 +15,7 @@ export default function WorkforceCarousel() {
         const title = language === 'es' ? service.titleEs : service.title
         const description = language === 'es' ? service.descriptionEs : service.description
         return (
-          <Link className="service-marquee-card" key={`${duplicate ? 'copy' : 'primary'}-${service.title}`} to="/services" tabIndex={duplicate ? -1 : undefined}>
+          <Link className="service-marquee-card" key={`${duplicate ? 'copy' : 'primary'}-${service.title}`} to={getServicePath(service)} tabIndex={duplicate ? -1 : undefined}>
             <ResponsiveImage
               alt={duplicate ? '' : (language === 'es' ? service.altEs : service.alt)}
               imageClassName="cover-image"
