@@ -154,10 +154,10 @@ main { min-height: 58vh; }
 .pillar-band-teal .eyebrow { color: #6edbe0; }
 .pillar-band-teal .pillar-band-intro > p { color: rgba(255,255,255,.72); }
 .pillar-band-grid { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 58px; overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: rgba(255,255,255,.42); }
-.pillar-band-grid article { min-height: 270px; padding: 34px 36px 38px 0; }
-.pillar-band-grid article + article { padding-left: 36px; border-left: 1px solid var(--line); }
-.pillar-band-grid span { display: block; margin-bottom: 44px; color: var(--blue); font-family: var(--serif); }
-.pillar-band-grid h3 { margin-bottom: 18px; font-family: var(--serif); font-size: 1.75rem; }
+.pillar-band-grid article { min-height: 270px; display: flex; flex-direction: column; align-items: flex-start; padding: 34px 36px 22px; }
+.pillar-band-grid article + article { border-left: 1px solid var(--line); }
+.pillar-band-grid span { display: block; margin-bottom: 48px; color: var(--blue); font-family: var(--serif); line-height: 1; }
+.pillar-band-grid h3 { margin-bottom: 20px; font-family: var(--serif); font-size: 1.75rem; line-height: 1.14; }
 .pillar-band-grid p { color: var(--muted); font-size: 1.05rem; line-height: 1.7; }
 .pillar-band-teal .pillar-band-grid { border-color: rgba(255,255,255,.24); }
 .pillar-band-teal .pillar-band-grid { background: rgba(255,255,255,.035); }
@@ -507,10 +507,10 @@ main { min-height: 58vh; }
   .section-heading-row { grid-template-columns: 1fr; gap: 24px; margin-bottom: 42px; }
   .pillar-band-intro { grid-template-columns: 1fr; gap: 28px; }
   .pillar-band-grid { grid-template-columns: 1fr; }
-  .pillar-band-grid article { min-height: 0; padding: 34px 0; }
-  .pillar-band-grid article + article { padding-left: 0; border-top: 1px solid var(--line); border-left: 0; }
+  .pillar-band-grid article { min-height: 0; padding: 34px 24px; }
+  .pillar-band-grid article + article { border-top: 1px solid var(--line); border-left: 0; }
   .pillar-band-teal .pillar-band-grid article + article { border-top-color: rgba(255,255,255,.2); }
-  .pillar-band-grid span { margin-bottom: 22px; }
+  .pillar-band-grid span { margin-bottom: 42px; }
   .home-hero { min-height: 0; grid-template-columns: 1fr; }
   .home-hero-copy-inner { width: calc(100% - 40px); margin-inline: auto; padding: 72px 0; }
   .home-hero h1 { font-size: clamp(3rem, 10vw, 5rem); }
