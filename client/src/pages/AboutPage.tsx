@@ -7,7 +7,7 @@ import aboutTeamImage from '../assets/generated/about-team'
 import industryImage from '../assets/generated/industry'
 import nwbocLogo from '../assets/generated/nwboc-logo'
 import { useLanguage } from '../context/language'
-import { officeLocations } from '../data/navigation'
+import { corporateOffice } from '../data/navigation'
 import { siteContent } from '../data/siteContent'
 
 export default function AboutPage() {
@@ -30,7 +30,7 @@ export default function AboutPage() {
       </div></section>
       <section className="wide-image-copy">
         <div className="wide-image"><ResponsiveImage alt={language === 'es' ? 'Equipo en un centro logístico' : 'Team in a logistics facility'} imageClassName="cover-image" sizes="(max-width: 900px) 100vw, 50vw" source={industryImage} /></div>
-        <div className="wide-copy"><p className="eyebrow eyebrow-light">{copy.nationwide[0]}</p><h2>{copy.nationwide[1]}</h2><p>{copy.nationwide[2]}</p><div className="mini-office-list">{officeLocations.map((office) => <span key={office.label}>{language === 'es' ? office.labelEs : office.label}</span>)}</div></div>
+        <div className="wide-copy"><p className="eyebrow eyebrow-light">{copy.nationwide[0]}</p><h2>{copy.nationwide[1]}</h2><p>{copy.nationwide[2]}</p><div className="mini-office-list"><span>{corporateOffice.city}</span><span>{language === 'es' ? corporateOffice.labelEs : corporateOffice.label}</span></div></div>
       </section>
       <section className="section"><div className="container-wide certification-summary">
         <ResponsiveImage alt="NWBOC" imageClassName="nwboc-mark" sizes="220px" source={nwbocLogo} />

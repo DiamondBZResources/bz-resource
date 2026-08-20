@@ -13,7 +13,7 @@ const revealSelectors = [
 const staggerSelectors = [
   '.process-list > li',
   '.reason-rows > article',
-  '.office-grid > address',
+  '.office-feature > *',
   '.pillar-band-grid > article',
   '.why-list > article',
   '.why-audience-grid > article',

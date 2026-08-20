@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { FiArrowUpRight, FiFacebook, FiInstagram, FiLinkedin } from 'react-icons/fi'
 import Brand from './Brand'
 import { useLanguage } from '../context/language'
-import { contactEmail, officeLocations, phoneDisplay, phoneHref, socialLinks } from '../data/navigation'
+import { contactEmail, corporateOffice, phoneDisplay, phoneHref, socialLinks } from '../data/navigation'
 import { getServicePath, services } from '../data/services'
 import { siteContent } from '../data/siteContent'
 
@@ -45,8 +45,8 @@ export default function Footer() {
           <h2>{copy.footer.contact}</h2>
           <a href={phoneHref}>{phoneDisplay}</a>
           <a href={`mailto:${contactEmail}`}>{contactEmail}</a>
-          <address>{officeLocations[0].lines[0]}<br />{officeLocations[0].lines[1]}</address>
-          <Link className="footer-office-link" to="/contact">{language === 'es' ? 'Ver todas las oficinas' : 'View all offices'} <FiArrowUpRight /></Link>
+          <address>{corporateOffice.lines[0]}<br />{corporateOffice.lines[1]}</address>
+          <Link className="footer-office-link" to="/contact">{language === 'es' ? 'Contactar la oficina de Ocala' : 'Contact the Ocala office'} <FiArrowUpRight /></Link>
         </div>
       </div>
       <div className="footer-bottom container-wide">

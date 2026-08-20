@@ -9,7 +9,7 @@ import industryImage from '../assets/generated/industry'
 import nwbocCertificate from '../assets/generated/nwboc-certificate'
 import nwbocLogo from '../assets/generated/nwboc-logo'
 import { useLanguage } from '../context/language'
-import { officeLocations } from '../data/navigation'
+import { corporateOffice } from '../data/navigation'
 import { siteContent } from '../data/siteContent'
 
 export default function HomePage() {
@@ -116,8 +116,16 @@ export default function HomePage() {
       <section className="section offices-section">
         <div className="container-wide">
           <div className="section-heading-row"><div><p className="eyebrow">{copy.offices.eyebrow}</p><h2>{copy.offices.title}</h2></div><p>{copy.offices.text}</p></div>
-          <div className="office-grid">
-            {officeLocations.map((office, index) => <address key={office.label}><span>{String(index + 1).padStart(2, '0')}</span><strong>{language === 'es' ? office.labelEs : office.label}</strong>{office.lines.map((line) => <small key={line}>{line}</small>)}</address>)}
+          <div className="office-feature">
+            <div className="office-feature-message">
+              <span>{language === 'es' ? 'Apoyo nacional' : 'Nationwide support'}</span>
+              <p>{language === 'es' ? 'Servicio laboral receptivo desde una sola sede en Ocala.' : 'Responsive workforce service from one home base in Ocala.'}</p>
+            </div>
+            <address>
+              <span>{corporateOffice.city}</span>
+              <strong>{language === 'es' ? corporateOffice.labelEs : corporateOffice.label}</strong>
+              {corporateOffice.lines.map((line) => <small key={line}>{line}</small>)}
+            </address>
           </div>
         </div>
       </section>

@@ -7,7 +7,7 @@ A replacement-ready React + TypeScript/Vite website for BZ Resources, with a sep
 - Modern full-width editorial layout with stronger typography and deliberate section rhythm.
 - Focused split homepage hero using an optimized, locally bundled BZ workplace image.
 - Continuously moving services marquee with reduced-motion support.
-- Substantial employer, job-seeker, process, industry, certification, and office sections.
+- Substantial employer, job-seeker, process, industry, certification, and Ocala office sections.
 - Responsive desktop/mobile navigation.
 - Global English / Spanish language switch saved in the browser.
 - English / Spanish contact, applicant questionnaire, and new-hire application pages.
@@ -62,7 +62,7 @@ AZURE_TENANT_ID=...
 AZURE_CLIENT_ID=...
 AZURE_CLIENT_SECRET=...
 GRAPH_SENDER_EMAIL=noreply@yourdomain.com
-FORM_RECIPIENT_EMAIL=vlake@bz-resources.com
+FORM_RECIPIENT_EMAIL=ceo@bz-resources.com
 ```
 
 The Entra app needs Microsoft Graph **Application** permission `Mail.Send` with admin consent. The server requests a client-credentials token and posts to `/users/{sender}/sendMail`.
